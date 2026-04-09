@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="./public/Crown.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Nevil's Final Gallery - Main Table</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="main-table-page">
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_table.html">Main Table</a></li>
+      <li><a href="maintenance.html">Maintenance</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h1>👑 Main Table 👑</h1>
+    <form id="maxRowsPerPageForm">
+      <label>
+        Please enter preferred maximum number of records per page:
+        <input type="number" id="maxRowsPerPageInput" value="5" min="1">
+      </label>
+    </form>
+
+    <div id="pagination"></div>
+
+    <table id="paintingsTable">
+      <thead>
+        <tr id="tableHeaders"></tr>
+        <tr id="searchInputs"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div id="paginationBottom"></div>
+    <button id="clearAll">Clear all</button>
+    <div id="feedback"></div>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="current-year"></span> Nevil's Final Gallery | <span id="datetime-container">Laden...</span></p>
+  </footer>
+
+  <script type="module" src="js/main_table.js"></script>
+  <script type="module" src="./js/nav-highlight.js"></script>
+  <script type="module" src="js/updateDateTime.js"></script>
+</body>
+
+</html>

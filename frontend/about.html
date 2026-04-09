@@ -1,0 +1,56 @@
+<!-- about.html -->
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="./public/Crown.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Over Nevil's Final Gallery</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="about-page">
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_table.html">Main Table</a></li>
+      <li><a href="maintenance.html">Maintenance</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h1>ℹ️ About this Gallery</h1>
+    <p>
+      Welcome to <strong>Nevil's Final Gallery</strong>, a digital art gallery where technology and aesthetics come together.<br><br>
+
+      This application was built as a full-stack project with a <strong>Node.js backend</strong> and a <strong>vanilla JavaScript frontend</strong>.
+      The backend manages a PostgreSQL database and supports full CRUD operations via a REST API.<br><br>
+
+      Users can add, view, sort, and filter paintings. File uploads are also supported, thanks to the integration of
+      <code>multer</code>.
+      All data is retrieved and rendered using modern web technologies.<br><br>
+
+      ✨ Features:<br>
+      - Dynamic table view with pagination and filters<br>
+      - Direct image uploads to the server<br>
+      - Painting preview section on the homepage<br>
+      - Full error handling and user feedback<br><br>
+
+      This gallery was designed as a tribute to the beauty of art — and the power of well-written code.<br><br>
+      Should you have any questions or suggestions, feel free to reach out to me <a href="mailto:nevil.douglas@gmail.com">via e-mail.</a><br>
+    </p>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="current-year"></span> Nevil's Final Gallery | <span id="datetime-container">Laden...</span></p>
+  </footer>
+
+  <script type="module" src="./js/about.js"></script>
+  <script type="module" src="./js/nav-highlight.js"></script>
+  <script type="module" src="./js/updateDateTime.js"></script>
+</body>
+
+</html>

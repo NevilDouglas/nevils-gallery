@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="./public/Crown.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Nevil's Final Gallery - Maintenance</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="maintenance-page">
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_table.html">Main Table</a></li>
+      <li><a href="maintenance.html" class="active">Maintenance</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h1>👑 Maintenance Page 👑</h1>
+
+    <div class="maintenance-layout">
+      <div class="maintenance-left-column">
+        <div id="paintingsList">
+          <h2><i>Currently in our collection:</i></h2>
+          <ul id="paintingsUl"></ul>
+        </div>
+      </div>
+
+      <div class="maintenance-right-column">
+        <div class="form-container">
+          <form id="paintingForm">
+            <input type="text" id="title" placeholder="Title" required><br>
+            <input type="text" id="artist" placeholder="Artist" required><br>
+            <input type="number" id="ranking" placeholder="Ranking"><br>
+            <textarea id="description" placeholder="Description" rows="4" required></textarea><br>
+            <input type="file" id="imageFile" accept="image/*"><br>
+            <button type="submit" id="submitButton">Add Painting</button>
+            <button type="button" id="cancelEditButton">Cancel</button>
+          </form>
+        </div>
+        <div id="message"></div>
+        <button id="resetDatasetButton">⚠️ Reset Dataset ⚠️</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="current-year"></span> Nevil's Final Gallery | <span id="datetime-container">Laden...</span></p>
+  </footer>
+
+  <div id="imagePreviewContainer">
+    <img id="previewImage" src="" alt="Image Preview">
+  </div>
+
+  <div id="updatePreviewModal">
+    <div class="update-preview-content">
+      <img id="updatedImagePreview" src="" alt="Action feedback preview">
+      <span id="updateOverlayText" class="update-overlay-text"></span>
+    </div>
+  </div>
+
+  <div id="editingPreviewContainer">
+    <img id="editingPreviewImage" src="" alt="Currently Editing">
+    <p id="editingPreviewText">Currently being edited...⚙️</p>
+  </div>
+
+  <script type="module" src="./js/maintenance.js"></script>
+  <script type="module" src="./js/nav-highlight.js"></script>
+  <script type="module" src="./js/updateDateTime.js"></script>
+
+</body>
+
+</html>

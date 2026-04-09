@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zip Code Merger</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+      background-color: white;
+      color: black;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #themeSwitch {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body id="body">
+  <h2>Zip Code Merger</h2>
+  <button onclick="selectOutput()">Kies Output Locatie</button><br>
+  <button onclick="mergeZip()">Gebruik Zip-bestand</button><br>
+  <button onclick="mergeLocal()">Gebruik Lokale Mappen</button><br>
+  <label><input type="checkbox" id="themeSwitch" onchange="toggleTheme()"> Dark Mode</label>
+
+  <script>
+    async function selectOutput() {
+      const res = await window.electronAPI.chooseOutputDirectory();
+      if (res.success) {
+        alert('Outputmap ingesteld:\n' + res.path);
+      } else {
+        alert('Geen outputmap geselecteerd.');
+      }
+    }
+
+    async function mergeZip() {
+      const res = await window.electronAPI.mergeZip();
+      if (res.success) {
+        alert('Bestand opgeslagen:\n' + res.path);
+      } else {
+        alert('Geen zipbestand geselecteerd.');
+      }
+    }
+
+    async function mergeLocal() {
+      const res = await window.electronAPI.mergeLocal();
+      if (res.success) {
+        alert('Bestand opgeslagen:\n' + res.path);
+      } else {
+        alert('Fout bij het maken van bestand.');
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.getElementById('body');
+      if (document.getElementById('themeSwitch').checked) {
+        body.style.backgroundColor = '#121212';
+        body.style.color = '#ffffff';
+      } else {
+        body.style.backgroundColor = '#ffffff';
+        body.style.color = '#000000';
+      }
+    }
+  </script>
+</body>
+</html>

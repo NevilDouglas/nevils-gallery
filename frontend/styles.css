@@ -1,0 +1,494 @@
+/* ~~~ Gemeenschappelijke stijlen voor alle pagina's ~~~ */
+body {
+  font-family: "Garamond", serif;
+  background-image: url("public/assets/img/The_Night_Watch.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+nav {
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav li {
+  display: inline-block;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.content {
+  padding: 20px;
+  text-align: center;
+}
+
+a:link {
+  color: green;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color: rgb(239, 124, 143);
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: blue;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:active {
+  color: yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+footer {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  padding: 9px 0;
+  width: 100%;
+  font-size: 0.9em;
+}
+
+/* ~~~ Specifieke stijlen voor de maintenance-pagina ~~~ */
+p {
+  color: rgb(255, 255, 255);
+  text-align: center;
+  font-size: 1.5em;
+}
+
+h2 {
+  color: rgb(255, 255, 255);
+  text-align: left
+}
+
+@media (min-width: 900px) {
+  .maintenance-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .maintenance-left-column {
+    flex: 3;
+  }
+
+  .maintenance-right-column {
+    flex: 1;
+  }
+}
+
+.form-container {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  margin-top: 65px;
+}
+
+.form-container input,
+.form-container textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  border: none;
+}
+
+.form-container button {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#cancelEditButton {
+  margin-left: 7px;
+  background-color: #dd3d3d;
+}
+
+#submitButton {
+  margin-right: 7px;
+  background-color: #28a745;
+}
+
+#message {
+  margin-top: 20px;
+  font-weight: bold;
+  font-style: italic;
+  font-size: larger;
+  color: #00ff00;
+}
+
+#resetDatasetButton {
+  padding: 10px 20px;
+  background-color: #f8751e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+#paintingsUl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.painting-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #f1f1f1;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.painting-card .image-container {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: #000;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.painting-card .card-body {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.painting-card .card-body strong,
+.painting-card .card-body span {
+  color: #f1f1f1;
+}
+
+.painting-card .card-body strong {
+  display: block;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+.painting-card .card-actions {
+  padding: 0 15px 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.painting-card .card-actions button {
+  padding: 5px 10px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.painting-card .card-actions .editBtn {
+  background-color: #5bc0de;
+  margin-right: 5px;
+}
+
+.painting-card .card-actions .deleteBtn {
+  background-color: #d9534f;
+}
+
+#imagePreviewContainer {
+  display: none;
+  position: fixed;
+  border: 2px solid #ccc;
+  background: white;
+  padding: 5px;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+
+#imagePreviewContainer img {
+  max-width: 400px;
+  max-height: auto;
+  display: block;
+}
+
+#updatePreviewModal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.update-preview-content {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#updatePreviewModal img {
+  max-width: 90%;
+  max-height: 80%;
+  border: 3px solid white;
+  border-radius: 5px;
+  background-color: white;
+  display: block;
+}
+
+.update-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: yellow;
+  font-size: 4vw;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+@keyframes glowing-border {
+  0% {
+    box-shadow: 0 0 5px #c59d23, 0 0 10px #c59d23, 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 20px #ffde7a, 0 0 30px #ffde7a, 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  100% {
+    box-shadow: 0 0 5px #c59d23, 0 0 10px #c59d23, 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+#editingPreviewContainer {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 1500;
+  padding: 20px;
+  background-color: white;
+  border: 2px solid #c59d23;
+  border-radius: 8px;
+  text-align: center;
+  animation: glowing-border 2.5s infinite ease-in-out;
+}
+
+#editingPreviewContainer img {
+  max-width: 500px;
+  max-height: 500px;
+  display: block;
+  border-radius: 4px;
+}
+
+#editingPreviewText {
+  margin-top: 20px;
+  font-style: italic;
+  color: #c59d23;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1.5em;
+}
+
+/* ~~~ Specifieke stijlen voor de main_table-pagina ~~~ */
+.maintenance-page h1,
+.main-table-page h1,
+.about-page h1,
+.index h1 {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 3.0em;
+  color: gold;
+}
+
+.main-table-page #paginationBottom,
+.main-table-page #pagination {
+  margin: 10px 0;
+  text-align: center;
+}
+
+.main-table-page #pagination button {
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: #8b0000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.main-table-page #pagination button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.main-table-page #maxRowsPerPageForm {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.main-table-page table {
+  width: 75%;
+  margin: 20px auto;
+  background-color: lightsalmon;
+  border: 3px solid orange;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .main-table-page table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+}
+
+.main-table-page th,
+.main-table-page td {
+  border: 1px solid black;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.main-table-page th {
+  background-color: rgb(177, 65, 31);
+  color: white;
+}
+
+.main-table-page td {
+  background-color: rgb(104, 9, 9);
+  color: rgb(226, 212, 211);
+}
+
+.main-table-page input[type="search"] {
+  width: 90%;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.main-table-page #clearAll {
+  margin: 10px auto;
+  display: block;
+  padding: 8px 12px;
+  background-color: #f8751e;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.main-table-page .imageStyle {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  width: 50px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.main-table-page .imageStyle:hover {
+  transform: scale(2.5);
+}
+
+/* Stijl voor de actieve link in de navigatiebalk */
+nav ul li a.active {
+  font-weight: bold;
+  color: #ff9748;
+}
+
+/*=======================================================
+================== Index.html ===========================
+=======================================================*/
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.preview-card {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 1rem;
+  text-align: center;
+}
+
+.preview-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+/*=======================================================
+============= Toevoeging maintenance-gedeelte============
+=======================================================*/
+
+.painting-card .image-container {
+  transition: transform 0.3s ease-in-out;
+}
+
+.painting-card:hover {
+  border-color: gold;
+}
+
+#updatePreviewModal .feedback-text-only {
+  padding: 40px;
+  font-size: 2em;
+  line-height: 1.4;
+}

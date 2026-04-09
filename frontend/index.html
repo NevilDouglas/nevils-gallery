@@ -1,0 +1,56 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="./public/Crown.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <title>Nevil's Final Gallery - Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="index">
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_table.html">Main Table</a></li>
+      <li><a href="maintenance.html">Maintenance</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <h1>👑 Welcome to Nevil's Final Gallery 👑</h1>
+    <p>
+      This is the home page of Nevil's last and final Gallery. <br>
+      We have the most beautiful and famous paintings in the world, all in one place! <br>
+      Feel free to explore the gallery and discover the masterpieces that await you. <br><br>
+
+      You can visit the <a href="main_table.html">Main Table</a> to see all the paintings in detail. <br>
+      If you are an artist or a painting enthusiast, check out the <a href="maintenance.html">Maintenance</a> page to
+      add or update paintings. <br><br>
+
+      For more information about the gallery, visit the <a href="about.html">About</a> page. <br>
+      We hope you enjoy your visit and find inspiration in the art we showcase. <br><br>
+
+      Enjoy your stay at Nevil's Final Gallery!
+    </p>
+    <section>
+      <h2>Een selectie van meesterwerken</h2>
+      <div id="previewContainer" class="preview-grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="current-year"></span> Nevil's Final Gallery | <span id="datetime-container">Laden...</span></p>
+  </footer>
+
+  <script type="module" src="./js/index.js"></script>
+  <script type="module" src="./js/nav-highlight.js"></script>
+  <script type="module" src="./js/updateDateTime.js"></script>
+
+</body>
+
+</html>
