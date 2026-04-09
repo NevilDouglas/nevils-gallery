@@ -17,4 +17,4 @@ const sequelize = process.env.DATABASE_URL
       define: { schema: 'schema_nevils_gallery' }
     });
 
-module.exports = sequelize;
+module.exports = sequelize; 
