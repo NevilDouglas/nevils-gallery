@@ -19,6 +19,7 @@ app.use('/api/paintings', paintingRoutes);
   try {
     await sequelize.authenticate();
     console.log('✅ Verbinding met database succesvol.');
+    await sequelize.query('CREATE SCHEMA IF NOT EXISTS schema_nevils_gallery');
     await sequelize.sync();
     console.log('🛠️ Tabellen gesynchroniseerd (veilige modus).');
 
