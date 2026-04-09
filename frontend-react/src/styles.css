@@ -358,10 +358,26 @@ h2 {
 }
 
 #editingPreviewContainer img {
-  max-width: 500px;
-  max-height: 500px;
+  max-width: min(500px, 35vw);
+  max-height: min(500px, 35vw);
+  width: 100%;
   display: block;
   border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  #editingPreviewContainer {
+    position: static;
+    margin: 20px 0;
+    z-index: auto;
+  }
+
+  #editingPreviewContainer img {
+    max-width: 100%;
+    max-height: 200px;
+    width: auto;
+    margin: 0 auto;
+  }
 }
 
 #editingPreviewText {
