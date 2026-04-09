@@ -1,4 +1,7 @@
 // backend/controllers/painting.controller.js
+// Bevat alle business-logica voor de schilderijen-API.
+// Elke functie correspondeert met een HTTP-route en verwerkt het verzoek,
+// communiceert met de database via Sequelize, en stuurt een JSON-antwoord terug.
 
 const { Painting, sequelize } = require('../models');
 const { randomUUID } = require('crypto');
@@ -6,6 +9,10 @@ const path = require('path');
 const fs = require('fs');
 const { Op } = require('sequelize');
 
+/**
+ * GET /api/paintings
+ * Haalt alle schilderijen op uit de database, gesorteerd op ranking (oplopend).
+ */
 const getAllPaintings = async (req, res) => {
     try {
         const paintings = await Painting.findAll({ order: [['ranking', 'ASC']] });
@@ -16,6 +23,11 @@ const getAllPaintings = async (req, res) => {
     }
 };
 
+/**
+ * GET /api/paintings/:id
+ * Haalt één schilderij op via zijn UUID.
+ * Geeft HTTP 404 terug als het schilderij niet bestaat.
+ */
 const getPaintingById = async (req, res) => {
     try {
         const painting = await Painting.findByPk(req.params.id);
@@ -29,13 +41,21 @@ const getPaintingById = async (req, res) => {
     }
 };
 
+/**
+ * POST /api/paintings
+ * Maakt een nieuw schilderij aan.
+ * Als een ranking is opgegeven, worden alle bestaande schilderijen met een
+ * gelijke of hogere ranking automatisch één positie opgeschoven (ranking-shift).
+ */
 const createPainting = async (req, res) => {
     try {
         const { title, artist, ranking, description } = req.body;
+        // Sla het relatieve serverpad op als er een bestand is geüpload
         const image = req.file ? `/assets/img/${req.file.filename}` : null;
 
         const newRanking = parseInt(ranking, 10);
         if (!isNaN(newRanking)) {
+            // Schuif alle schilderijen met ranking >= nieuw ranking één plek omhoog
             console.log(`Rankings >= ${newRanking} worden met 1 opgehoogd...`);
             await sequelize.query(
                 `UPDATE schema_nevils_gallery.paintings
@@ -46,6 +66,7 @@ const createPainting = async (req, res) => {
             console.log(`Ranking-shift klaar. Nieuw schilderij krijgt ranking ${newRanking}.`);
         }
 
+        // Maak het nieuwe schilderij aan met een gegenereerd UUID
         const newPainting = await Painting.create({
             id: randomUUID(),
             title,
@@ -61,6 +82,15 @@ const createPainting = async (req, res) => {
     }
 };
 
+/**
+ * PUT /api/paintings/:id
+ * Werkt een bestaand schilderij bij.
+ * Als de ranking verandert, worden andere schilderijen automatisch verschoven:
+ * - Omhoog gaan (lagere ranking): schilderijen in het bereik worden naar beneden geschoven
+ * - Omlaag gaan (hogere ranking): schilderijen in het bereik worden naar boven geschoven
+ * Als een nieuwe afbeelding is geüpload, wordt de oude verwijderd van de server
+ * (tenzij het een initieel schilderij betreft uit de /initials/ map).
+ */
 const updatePainting = async (req, res) => {
     try {
         const painting = await Painting.findByPk(req.params.id);
@@ -69,9 +99,10 @@ const updatePainting = async (req, res) => {
         const oldRanking = parseInt(painting.ranking, 10);
         const newRanking = parseInt(req.body.ranking, 10);
 
+        // Voer ranking-shift uit als de ranking daadwerkelijk veranderd is
         if (!isNaN(oldRanking) && !isNaN(newRanking) && oldRanking !== newRanking) {
             if (newRanking < oldRanking) {
-                // Schilderij gaat omhoog: schuif alles in [newRanking, oldRanking-1] één plek omlaag
+                // Schilderij gaat omhoog in de lijst: schuif alles in [newRanking, oldRanking-1] omlaag
                 console.log(`Rankings ${newRanking} t/m ${oldRanking - 1} worden met 1 opgehoogd...`);
                 await sequelize.query(
                     `UPDATE schema_nevils_gallery.paintings
@@ -83,7 +114,7 @@ const updatePainting = async (req, res) => {
                     { replacements: { newRanking, oldRanking, id: painting.id } }
                 );
             } else {
-                // Schilderij gaat omlaag: schuif alles in [oldRanking+1, newRanking] één plek omhoog
+                // Schilderij gaat omlaag in de lijst: schuif alles in [oldRanking+1, newRanking] omhoog
                 console.log(`Rankings ${oldRanking + 1} t/m ${newRanking} worden met 1 verlaagd...`);
                 await sequelize.query(
                     `UPDATE schema_nevils_gallery.paintings
@@ -98,6 +129,7 @@ const updatePainting = async (req, res) => {
             console.log(`Ranking-shift klaar. Schilderij krijgt ranking ${newRanking}.`);
         }
 
+        // Stel de bij te werken velden in
         const updateData = {
             title: req.body.title,
             artist: req.body.artist,
@@ -105,8 +137,10 @@ const updatePainting = async (req, res) => {
             description: req.body.description,
         };
 
+        // Verwerk nieuwe afbeelding als die is geüpload
         if (req.file) {
             updateData.image = `/assets/img/${req.file.filename}`;
+            // Verwijder de oude afbeelding van de server (alleen als het geen initieel schilderij is)
             if (painting.image && !painting.image.includes('/initials/')) {
                 const oldImagePath = path.join(__dirname, '..', 'public', painting.image);
                 if (fs.existsSync(oldImagePath)) {
@@ -118,18 +152,26 @@ const updatePainting = async (req, res) => {
         }
 
         await painting.update(updateData);
-        res.json(await painting.reload());
+        res.json(await painting.reload()); // Stuur de meest actuele versie terug
     } catch (error) {
         console.error(`Fout bij bijwerken schilderij ${req.params.id}:`, error);
         res.status(500).json({ error: "Interne serverfout bij het bijwerken van het schilderij." });
     }
 };
 
+/**
+ * DELETE /api/paintings/:id
+ * Verwijdert een schilderij uit de database.
+ * Als het schilderij een geüploade afbeelding heeft (geen initieel schilderij),
+ * wordt de afbeelding ook van de server verwijderd.
+ * Geeft HTTP 204 (No Content) terug bij succes.
+ */
 const deletePainting = async (req, res) => {
     try {
         const painting = await Painting.findByPk(req.params.id);
         if (!painting) return res.status(404).json({ error: 'Painting not found' });
 
+        // Verwijder de afbeelding van de server als het geen initieel schilderij betreft
         if (painting.image && !painting.image.includes('/initials/')) {
             const imagePath = path.join(__dirname, '..', 'public', painting.image);
             if (fs.existsSync(imagePath)) {
@@ -138,13 +180,15 @@ const deletePainting = async (req, res) => {
         }
 
         await painting.destroy();
-        res.status(204).send();
+        res.status(204).send(); // Geen inhoud bij succesvolle verwijdering
     } catch (error) {
         console.error(`Fout bij verwijderen schilderij ${req.params.id}:`, error);
         res.status(500).json({ error: error.message });
     }
 };
 
+// De 20 originele schilderijen die bij een reset worden hersteld.
+// Elk schilderij verwijst naar een afbeelding in de /initials/ map die nooit wordt verwijderd.
 const initialPaintings = [
     { id: '0715995f-1c12-43ef-b385-14eb643891a9', image: '/assets/img/initials/The_Persistence_of_Memory.jpg', title: 'The Persistence of Memory', artist: 'Salvador Dali', ranking: '5', description: 'Painted in 1931 by yet another Spanish artist, Salvador Dali\'s The Persistence of Memory is one of the most recognizable and individual pieces in art history. Depicting a dismal shoreline draped with melting clocks, it is thought that Albert Einstein\'s Theory of Relativity inspired this bizarre piece.' },
     { id: '14bc1015-1ab0-4054-85d6-ca0fe7318a9c', image: '/assets/img/initials/Cafe_Terrace_at_Night.jpg', title: 'Cafe Terrace at Night', artist: 'Vincent van Gogh', ranking: '16', description: 'Never one for flashy titles, Cafe Terrace at Night (1888) by the ever-prolific Vincent Van Gogh, is one of the most individual depictions of such a mundane setting. Though Van Gogh never signed this piece, he references his famous Cafe masterpiece in many personal documents.' },
@@ -165,41 +209,52 @@ const initialPaintings = [
     { id: 'dd06724d-97f2-47cd-a1b7-b523c98f7acc', image: '/assets/img/initials/The_Kiss.jpg', title: 'The Kiss', artist: 'Gustav Klimt', ranking: '12', description: 'Easily touted as Gustav Klimt\'s most famous painting, The Kiss is a realistic yet geometric depiction of a kissing couple, completed in 1908 in Vienna, Austria. What makes this piece different than the other oil paintings on the list is that it also incorporates gold leaf on canvas (in addition to oils).' },
     { id: 'e0cab2f7-4ac4-4d8f-8203-5a8591d10711', image: '/assets/img/initials/The_Flower_Carrier.jpg', title: 'The Flower Carrier', artist: 'Diego Rivera', ranking: '14', description: 'Known in its native tongue as Cargador de Flores, The Flower Carrier was painted by Diego Rivera in 1935. Widely considered to be the greatest Mexican painter of the twentieth century, Rivera was known for his simple paintings dominated by their bright colors and The Flower Carrier is no exception.' },
     { id: 'eb1adf7a-4813-456f-8583-7771e4184f7a', image: '/assets/img/initials/The_Scream.jpg', title: 'The Scream', artist: 'Edvard Munch', ranking: '3', description: 'Using oil and pastel on cardboard, Edvard Munch painted his most famous piece, The Scream, circa 1893. Featuring a ghoulish figure that looks like the host from Tales from the Crypt, the backdrop of this expressionist painting is said to be Oslo, Norway.' },
-    { id: 'ecb7ea8c-03de-4847-a28d-a2f4ea0790b4', image: '/assets/img/initials/The_Night_Watch.jpg', title: 'The Night Watch', artist: 'Rembrandt van Rijn', ranking: '11', description: 'In its native Dutch tongue, De Nachtwacht is most popularly referred to in modern culture as The Night Watch. Using oil on canvas, Rembrandt (van Rijn) was commissioned by a militia captain and his 17 militia guards in 1642 to paint their company, in an effort to show off for the French Queen that would be visiting.' }
+    { id: 'ecb7ea8c-03de-4847-a28d-a2f4ea0790b4', image: '/assets/img/initials/The_Night_Watch.jpg', title: 'The Night Watch', artist: 'Rembrandt van Rijn', ranking: '11', description: 'In its native Dutch tongue, De Nachtwacht is most popularly referred to in modern culture as The Night Watch. Using oil on canvas, Rembrandt (van Rijn) was commissioned by a militia captain and his 17 militia guards in 1642 to paint their company, in an effort to show off for the French Queen that would be visiting.' },
 ];
 
+/**
+ * POST /api/paintings/reset
+ * Reset de volledige collectie naar de originele 20 schilderijen.
+ * Stap 1: Verwijder alle afbeeldingen van door gebruikers toegevoegde schilderijen.
+ * Stap 2: Verwijder alle rijen uit de tabel (truncate).
+ * Stap 3: Voeg de 20 originele schilderijen opnieuw in.
+ */
 const resetPaintings = async (req, res) => {
     try {
-      console.log('Reset gestart: bezig met opruimen van gebruikers-schilderijen...');
-      const userPaintings = await Painting.findAll({
-        where: { image: { [Op.notLike]: '%/initials/%' } }
-      });
+        console.log('Reset gestart: bezig met opruimen van gebruikers-schilderijen...');
 
-      for (const p of userPaintings) {
-        if (p.image) {
-          const imagePath = path.join(__dirname, '..', 'public', p.image);
-          if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+        // Zoek alle schilderijen die NIET uit de /initials/ map komen (dus door gebruikers toegevoegd)
+        const userPaintings = await Painting.findAll({
+            where: { image: { [Op.notLike]: '%/initials/%' } },
+        });
+
+        // Verwijder de bijbehorende afbeeldingsbestanden van de server
+        for (const p of userPaintings) {
+            if (p.image) {
+                const imagePath = path.join(__dirname, '..', 'public', p.image);
+                if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath);
+            }
         }
-      }
 
-      console.log('Bezig met resetten van de database tabel...');
-      await Painting.destroy({ where: {}, truncate: true });
-      await Painting.bulkCreate(initialPaintings);
+        console.log('Bezig met resetten van de database tabel...');
 
-      console.log('Reset voltooid.');
-      res.json({ message: `Database is succesvol gereset naar de originele 20 schilderijen.` });
+        // Verwijder alle rijen en herstel de originele dataset
+        await Painting.destroy({ where: {}, truncate: true });
+        await Painting.bulkCreate(initialPaintings);
 
+        console.log('Reset voltooid.');
+        res.json({ message: `Database is succesvol gereset naar de originele 20 schilderijen.` });
     } catch (error) {
-      console.error('FATALE FOUT bij resetten dataset:', error);
-      res.status(500).json({ error: 'Er is een fout opgetreden bij het resetten van de dataset.' });
+        console.error('FATALE FOUT bij resetten dataset:', error);
+        res.status(500).json({ error: 'Er is een fout opgetreden bij het resetten van de dataset.' });
     }
 };
 
 module.exports = {
-  getAllPaintings,
-  getPaintingById,
-  createPainting,
-  updatePainting,
-  deletePainting,
-  resetPaintings
+    getAllPaintings,
+    getPaintingById,
+    createPainting,
+    updatePainting,
+    deletePainting,
+    resetPaintings,
 };

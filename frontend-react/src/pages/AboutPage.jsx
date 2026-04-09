@@ -1,16 +1,21 @@
+// frontend-react/src/pages/AboutPage.jsx
+// Informatiepagina over de galerij en de technische opbouw van de applicatie.
+// De body-klasse 'about-page' wordt ingesteld voor paginaspecifieke CSS-stijlen.
+
 import { useEffect } from 'react';
 
 export default function AboutPage() {
+  // Stel de body-klasse in voor paginaspecifieke achtergrondstijl
   useEffect(() => {
     document.body.className = 'about-page';
-    return () => { document.body.className = ''; };
+    return () => { document.body.className = ''; }; // Herstel bij verlaten van de pagina
   }, []);
 
   return (
     <main className="content">
       <h1>ℹ️ About this Gallery</h1>
       <p>
-        Welcome to <strong>Nevil's Final Gallery</strong>, a digital art gallery where technology and aesthetics come together.<br /><br />
+        <strong>Nevil's Final Gallery</strong> is a digital art gallery where technology and aesthetics come together.<br /><br />
 
         This application was built as a full-stack project with a <strong>Node.js backend</strong> and a <strong>React frontend</strong>.
         The backend manages a PostgreSQL database and supports full CRUD operations via a REST API.<br /><br />

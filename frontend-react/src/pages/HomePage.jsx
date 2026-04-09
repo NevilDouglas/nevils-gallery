@@ -1,19 +1,28 @@
+// frontend-react/src/pages/HomePage.jsx
+// Startpagina van de galerij.
+// Toont een welkomstboodschap en een preview-raster van de eerste 8 schilderijen.
+// De body-klasse 'index' wordt ingesteld voor paginaspecifieke CSS-stijlen.
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchPaintings, API_BASE_URL } from '../api/paintings';
 
 export default function HomePage() {
+  // De eerste 8 schilderijen voor de previewsectie
   const [previews, setPreviews] = useState([]);
+  // Foutindicator als het laden mislukt
   const [error, setError] = useState(false);
 
+  // Stel de body-klasse in voor paginaspecifieke CSS-achtergrond
   useEffect(() => {
     document.body.className = 'index';
-    return () => { document.body.className = ''; };
+    return () => { document.body.className = ''; }; // Herstel bij verlaten van de pagina
   }, []);
 
+  // Laad de schilderijen bij het mounten van de component
   useEffect(() => {
     fetchPaintings()
-      .then(data => setPreviews(data.slice(0, 8)))
+      .then(data => setPreviews(data.slice(0, 8))) // Toon alleen de eerste 8
       .catch(() => setError(true));
   }, []);
 
@@ -37,6 +46,7 @@ export default function HomePage() {
         </p>
       </main>
 
+      {/* Previewsectie met thumbnail-kaartjes van de eerste 8 schilderijen */}
       <section>
         <h2>Een selectie van meesterwerken</h2>
         <div id="previewContainer" className="preview-grid">
