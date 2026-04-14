@@ -74,9 +74,14 @@ export default function LoginPage() {
 
           {error && <p className="login-error">{error}</p>}
 
-          <button type="submit" className="login-submit" disabled={loading}>
-            {loading ? 'Bezig...' : 'Inloggen'}
-          </button>
+          <div className="login-buttons">
+            <button type="submit" className="login-submit" disabled={loading}>
+              {loading ? 'Bezig...' : 'Login'}
+            </button>
+            <button type="button" className="login-cancel" onClick={() => navigate(-1)}>
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </main>
