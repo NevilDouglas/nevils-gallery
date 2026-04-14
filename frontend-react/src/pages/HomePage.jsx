@@ -36,7 +36,7 @@ export default function HomePage() {
           Feel free to explore the gallery and discover the masterpieces that await you. <br /><br />
 
           You can visit the <Link to="/main-table">Main Table</Link> to see all the paintings in detail. <br />
-          If you are an artist or a painting enthusiast, check out the <Link to="/maintenance">Maintenance</Link> page to
+          If you are a registered artist or a painting enthusiast, check out the <Link to="/maintenance">Maintenance</Link> page to
           add or update paintings. <br /><br />
 
           For more information about the gallery, visit the <Link to="/about">About</Link> page. <br />
