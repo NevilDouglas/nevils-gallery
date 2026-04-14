@@ -14,6 +14,7 @@ const {
 } = require('../controllers/painting.controller');
 
 const upload = require('../middleware/upload');
+const { requireAuth, requireAdmin } = require('../middleware/auth.middleware');
 
 /**
  * Middleware: valideert of de opgegeven :id een geldige UUID is.
@@ -79,7 +80,7 @@ router.get('/', getAllPaintings);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/reset', resetPaintings);
+router.post('/reset', requireAuth, requireAdmin, resetPaintings);
 
 /**
  * @swagger
@@ -155,7 +156,7 @@ router.get('/:id', validateUUID, getPaintingById);
  *       500:
  *         description: Serverfout
  */
-router.post('/', upload.single('imageFile'), createPainting);
+router.post('/', requireAuth, requireAdmin, upload.single('imageFile'), createPainting);
 
 /**
  * @swagger
@@ -206,7 +207,7 @@ router.post('/', upload.single('imageFile'), createPainting);
  *       500:
  *         description: Serverfout
  */
-router.put('/:id', validateUUID, upload.single('imageFile'), updatePainting);
+router.put('/:id', requireAuth, requireAdmin, validateUUID, upload.single('imageFile'), updatePainting);
 
 /**
  * @swagger
@@ -236,6 +237,6 @@ router.put('/:id', validateUUID, upload.single('imageFile'), updatePainting);
  *       500:
  *         description: Serverfout
  */
-router.delete('/:id', validateUUID, deletePainting);
+router.delete('/:id', requireAuth, requireAdmin, validateUUID, deletePainting);
 
 module.exports = router;

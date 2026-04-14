@@ -85,14 +85,14 @@ ipcMain.handle('merge-zip', async () => {
   const extractPath = path.join(__dirname, 'tmp_extract');
   zip.extractAllTo(extractPath, true);
 
-  const frontend-reactPath = path.join(extractPath, 'frontend-react');
+  const frontendReactPath = path.join(extractPath, 'frontend-react');
   const backendPath = path.join(extractPath, 'backend');
 
-  const frontend-reactFiles = getAllRelevantFiles(frontend-reactPath);
+  const frontendReactFiles = getAllRelevantFiles(frontendReactPath);
   const backendFiles = getAllRelevantFiles(backendPath);
 
   let resultContent = '';
-  resultContent += readFilesAsText(frontend-reactFiles, extractPath, 'frontend-react');
+  resultContent += readFilesAsText(frontendReactFiles, extractPath, 'frontend-react');
   resultContent += readFilesAsText(backendFiles, extractPath, 'backend');
 
   const outputPath = path.join(outputDirectory, 'merged_code_from_zip.txt');
@@ -103,14 +103,14 @@ ipcMain.handle('merge-zip', async () => {
 
 ipcMain.handle('merge-local', async () => {
   const rootPath = path.resolve(__dirname, '..', '..'); 
-  const frontend-reactPath = path.join(rootPath, 'frontend-react');
+  const frontendReactPath = path.join(rootPath, 'frontend-react');
   const backendPath = path.join(rootPath, 'backend');
 
-  const frontend-reactFiles = getAllRelevantFiles(frontend-reactPath);
+  const frontendReactFiles = getAllRelevantFiles(frontendReactPath);
   const backendFiles = getAllRelevantFiles(backendPath);
 
   let resultContent = '';
-  resultContent += readFilesAsText(frontend-reactFiles, rootPath, 'frontend-react');
+  resultContent += readFilesAsText(frontendReactFiles, rootPath, 'frontend-react');
   resultContent += readFilesAsText(backendFiles, rootPath, 'backend');
 
   const outputPath = path.join(outputDirectory, 'merged_code_from_local.txt');

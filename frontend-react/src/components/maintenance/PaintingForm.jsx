@@ -14,7 +14,7 @@ import { API_BASE_URL } from '../../api/paintings';
  * @param {Function} props.onCancel - Callback bij annuleren
  */
 export default function PaintingForm({ editingPainting, onSubmit, onCancel }) {
-  const [fields, setFields] = useState({ title: '', artist: '', ranking: '', description: '' });
+  const [fields, setFields] = useState({ title: '', artist: '', ranking: '', description: '', alt: '' });
   const [imageFile, setImageFile] = useState(null);       // Het geselecteerde afbeeldingsbestand
   const [previewSrc, setPreviewSrc] = useState(null);     // Blob-URL voor de nieuwe afbeeldingspreview
   const previewUrlRef = useRef(null);                     // Ref voor het bijhouden van de huidige blob-URL
@@ -28,12 +28,13 @@ export default function PaintingForm({ editingPainting, onSubmit, onCancel }) {
         artist: editingPainting.artist || '',
         ranking: editingPainting.ranking || '',
         description: editingPainting.description || '',
+        alt: editingPainting.alt || '',
       });
       // Focus het titelveld automatisch voor snelle invoer
       setTimeout(() => titleRef.current?.focus(), 0);
     } else {
       // Leeg alle velden in toevoegmodus
-      setFields({ title: '', artist: '', ranking: '', description: '' });
+      setFields({ title: '', artist: '', ranking: '', description: '', alt: '' });
     }
     // Ruim de blob-URL op bij het wisselen van schilderij
     if (previewUrlRef.current) {
@@ -120,6 +121,7 @@ export default function PaintingForm({ editingPainting, onSubmit, onCancel }) {
       <div className="form-container">
         <form onSubmit={handleSubmit}>
           <input ref={titleRef} type="text" name="title" placeholder="Title" value={fields.title} onChange={handleFieldChange} required /><br />
+          <input type="text" name="alt" placeholder="Alt description (optional — defaults to title)" value={fields.alt} onChange={handleFieldChange} /><br />
           <input type="text" name="artist" placeholder="Artist" value={fields.artist} onChange={handleFieldChange} required /><br />
           <input type="number" name="ranking" placeholder="Ranking" value={fields.ranking} onChange={handleFieldChange} /><br />
           <textarea name="description" placeholder="Description" rows="4" value={fields.description} onChange={handleFieldChange} required /><br />

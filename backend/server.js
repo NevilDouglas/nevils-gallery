@@ -10,6 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 const { sequelize } = require('./models');
 const paintingRoutes = require('./routes/painting.routes');
+const authRoutes     = require('./routes/auth.routes');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -23,6 +24,7 @@ app.use(express.static('public'));        // Serveer bestanden uit de public map
 app.use(express.static('../frontend'));   // Serveer de vanilla JS frontend (lokale ontwikkeling)
 
 // --- API Routes ---
+app.use('/api/auth',     authRoutes);      // Authenticatie-endpoints (login)
 app.use('/api/paintings', paintingRoutes); // Alle schilderijen-endpoints
 
 // --- Swagger UI ---
@@ -39,8 +41,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     // Maak het schema aan als het nog niet bestaat (nodig op Heroku)
     await sequelize.query('CREATE SCHEMA IF NOT EXISTS schema_nevils_gallery');
 
-    // Synchroniseer de Sequelize modellen met de database (maakt tabellen aan indien nodig)
-    await sequelize.sync();
+    // Synchroniseer de Sequelize modellen met de database.
+    // alter: true voegt nieuwe kolommen toe aan bestaande tabellen zonder data te verliezen.
+    await sequelize.sync({ alter: true });
     console.log('🛠️ Tabellen gesynchroniseerd (veilige modus).');
 
     // Start de HTTP-server

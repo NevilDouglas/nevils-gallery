@@ -7,16 +7,16 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const sequelize = process.env.DATABASE_URL
-  // Productieomgeving (Heroku): gebruik de volledige connection string met SSL
+  // Productieomgeving (Heroku): gebruik de volledige connection string.
+  // SSL alleen inschakelen in productie — lokale PostgreSQL ondersteunt doorgaans geen SSL.
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
-      dialectOptions: {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false, // Vereist voor Heroku's zelfondertekend SSL-certificaat
-        },
-      },
+      dialectOptions: isProduction
+        ? { ssl: { require: true, rejectUnauthorized: false } }
+        : {},
       define: { schema: 'schema_nevils_gallery' }, // Standaardschema voor alle modellen
     })
   // Lokale ontwikkelomgeving: gebruik losse verbindingsparameters uit .env

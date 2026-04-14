@@ -12,7 +12,7 @@ import './styles.css'; // Globale stijlen voor de gehele applicatie
 ReactDOM.createRoot(document.getElementById('root')).render(
   // StrictMode activeert extra waarschuwingen tijdens ontwikkeling
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <App />
     </BrowserRouter>
   </React.StrictMode>

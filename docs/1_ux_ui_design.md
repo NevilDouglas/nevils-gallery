@@ -84,7 +84,7 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 
 **Toepassing in de applicatie:**
 
-- **Sortering en filtering (`main_table.js` / `MainTablePage.jsx`):** De tabel ondersteunt sortering op alle kolommen (titel, kunstenaar, ranking) en per-kolom filtering. Marieke kan in twee klikken de tabel op kunstenaar filteren.
+- **Sortering en filtering (`main_table.js` / `MainTablePage.jsx`):** De tabel ondersteunt sortering op alle kolommen (Title, Artist, Ranking) en per-kolom filtering. Marieke kan in twee klikken de tabel op kunstenaar filteren.
 - **Paginering:** Grote datasets worden opgesplitst in pagina's, zodat er niet onnodig door honderden rijen hoeft te worden gescrold.
 - **Centrale navigatiebalk:** Alle vier pagina's zijn altijd bereikbaar via de navbar. Geen diepe menustructuren.
 - **Actieve pagina-markering (`nav-highlight.js` / `Nav.jsx`):** De huidige pagina is altijd gemarkeerd in de navigatie — de gebruiker weet altijd waar hij is.
@@ -127,7 +127,7 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 
 **Toepassing in de applicatie:**
 
-- **Bevestigingsmodal bij verwijderen (`ActionModal.jsx`):** Wanneer David op "Verwijder" klikt, verschijnt er een bevestigingspopup. Accidenteel verwijderen is daarmee vrijwel onmogelijk.
+- **Bevestigingsmodal bij verwijderen (`ActionModal.jsx`):** Wanneer David op "Delete" klikt, verschijnt er een bevestigingspopup. Accidenteel verwijderen is daarmee vrijwel onmogelijk.
 - **UUID-validatie in de backend (`validateUUID` middleware):** Als een ongeldig ID wordt meegegeven in een API-aanroep, geeft de server direct HTTP 400 terug met een duidelijke foutmelding (`{ error: 'Invalid UUID format' }`). Dit voorkomt dat ongeldige data de database bereikt.
 - **HTTP 404 bij niet-gevonden schilderij:** Als een schilderij niet bestaat, geeft de API een 404-foutcode terug — nooit een lege response of crash.
 - **Reset-functie:** Als David per ongeluk meerdere schilderijen verwijdert of incorrect bewerkt, kan hij de volledige collectie herstellen via de reset-knop (POST `/api/paintings/reset`).
@@ -148,8 +148,8 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 
 **Toepassing in de applicatie:**
 
-- **Vertrouwde navigatiestructuur:** De applicatie gebruikt een horizontale navbar bovenaan met duidelijke, beschrijvende paginanamen (Home, Overzicht, Beheer, Over). Dit is een conventioneel patroon dat gebruikers al kennen.
-- **Beschrijvende knoppen:** Knoppen zoals "Toevoegen", "Bewerken" en "Verwijder" zijn voorzien van duidelijke tekst — geen cryptische iconen zonder label.
+- **Vertrouwde navigatiestructuur:** De applicatie gebruikt een horizontale navbar bovenaan met duidelijke, beschrijvende paginanamen (Home, Main Table, Maintenance, About). Dit is een conventioneel patroon dat gebruikers al kennen.
+- **Beschrijvende knoppen:** Knoppen zoals "Add", "Edit" en "Delete" zijn voorzien van duidelijke tekst — geen cryptische iconen zonder label.
 - **Consistente paginalayout:** Elke pagina volgt dezelfde basisstructuur: navbar bovenaan, inhoud in het midden, footer onderaan. Marieke en Lars hoeven dit maar één keer te leren.
 - **Tabelheaders als sorteerknop:** In de overzichtstabel zijn de kolomkoppen aanklikbaar voor sortering — een patroon dat gebruikers herkennen van spreadsheets en e-mailclients.
 - **Inline feedbackberichten:** Na een succesvolle aanmaak, bewerking of verwijdering geeft de frontend directe visuele feedback (bijv. het kaartje verdwijnt of verschijnt).

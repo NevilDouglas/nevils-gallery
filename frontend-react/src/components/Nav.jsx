@@ -1,19 +1,44 @@
 // frontend-react/src/components/Nav.jsx
-// Navigatiecomponent die bovenaan elke pagina wordt weergegeven.
-// Gebruikt NavLink van React Router zodat de actieve paginalink automatisch
-// de 'active' CSS-klasse krijgt.
+// Navigatiecomponent bovenaan elke pagina.
+// - Maintenance: alleen zichtbaar voor ingelogde admins
+// - Login:       alleen zichtbaar wanneer niet ingelogd
+// - Logout:      vervangt Login wanneer wel ingelogd
 
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Nav() {
+  const { isAdmin, isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate('/', { replace: true });
+  }
+
   return (
     <nav>
       <ul>
-        {/* 'end' zorgt dat de Home-link alleen actief is op exact het pad '/' */}
         <li><NavLink to="/" end>Home</NavLink></li>
         <li><NavLink to="/main-table">Main Table</NavLink></li>
-        <li><NavLink to="/maintenance">Maintenance</NavLink></li>
+
+        {/* Maintenance alleen zichtbaar voor ingelogde admins */}
+        {isAdmin && (
+          <li><NavLink to="/maintenance">Maintenance</NavLink></li>
+        )}
+
         <li><NavLink to="/about">About</NavLink></li>
+
+        {/* Login alleen zichtbaar wanneer niet ingelogd; Logout wanneer wel ingelogd */}
+        {!isLoggedIn ? (
+          <li><NavLink to="/login">Login</NavLink></li>
+        ) : (
+          <li>
+            <button className="nav-logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );

@@ -20,7 +20,7 @@ export default function AboutPage() {
         This application was built as a full-stack project with a <strong>Node.js backend</strong> and a <strong>React frontend</strong>.
         The backend manages a PostgreSQL database and supports full CRUD operations via a REST API.<br /><br />
 
-        Users can add, view, sort, and filter paintings. File uploads are also supported, thanks to the integration of
+        Users can login, admins users can even add, view, sort, and filter paintings. File uploads are also supported, thanks to the integration of 
         <code>multer</code>.
         All data is retrieved and rendered using modern web technologies.<br /><br />
 

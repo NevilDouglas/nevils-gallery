@@ -49,9 +49,11 @@ const getPaintingById = async (req, res) => {
  */
 const createPainting = async (req, res) => {
     try {
-        const { title, artist, ranking, description } = req.body;
+        const { title, artist, ranking, description, alt } = req.body;
         // Sla het relatieve serverpad op als er een bestand is geüpload
         const image = req.file ? `/assets/img/${req.file.filename}` : null;
+        // Alt-tekst: gebruik opgegeven waarde, anders de titel als fallback
+        const resolvedAlt = alt || title || null;
 
         const newRanking = parseInt(ranking, 10);
         if (!isNaN(newRanking)) {
@@ -74,6 +76,7 @@ const createPainting = async (req, res) => {
             ranking,
             description,
             image,
+            alt: resolvedAlt,
         });
         res.status(201).json(newPainting);
     } catch (error) {
@@ -129,12 +132,19 @@ const updatePainting = async (req, res) => {
             console.log(`Ranking-shift klaar. Schilderij krijgt ranking ${newRanking}.`);
         }
 
+        // Bepaal de nieuwe alt-tekst:
+        // 1. Gebruik de opgegeven waarde als die ingevuld is
+        // 2. Anders: gebruik de (nieuwe) titel als fallback
+        // 3. Anders: behoud de bestaande alt-tekst
+        const newAlt = req.body.alt || req.body.title || painting.alt;
+
         // Stel de bij te werken velden in
         const updateData = {
             title: req.body.title,
             artist: req.body.artist,
             ranking: req.body.ranking,
             description: req.body.description,
+            alt: newAlt,
         };
 
         // Verwerk nieuwe afbeelding als die is geüpload

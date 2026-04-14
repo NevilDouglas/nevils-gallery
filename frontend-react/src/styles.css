@@ -416,6 +416,7 @@ h2 {
 
 .main-table-page th.active-sort .col-label {
   font-size: 1.3em;
+  color: gold;
 }
 
 .main-table-page th .sort-btn {
@@ -572,4 +573,113 @@ nav ul li a.active {
   text-align: center;
   padding: 10px;
   font-weight: bold;
+}
+
+/*=======================================================
+=================== Login pagina ========================
+=======================================================*/
+
+.login-card {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 36px 40px;
+  max-width: 420px;
+  margin: 40px auto 0;
+  text-align: left;
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.95em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.login-card input[type="text"],
+.login-card input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: none;
+  margin-bottom: 18px;
+  font-size: 1em;
+}
+
+.password-field {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.password-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 44px 10px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 0;
+  line-height: 1;
+  color: #333;
+}
+
+.password-toggle:hover {
+  filter: brightness(0.6);
+  transform: translateY(-50%) scale(1.15);
+}
+
+.login-error {
+  color: #ff6b6b;
+  font-size: 0.9em;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.login-submit {
+  width: 100%;
+  padding: 11px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.login-submit:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Logout-knop in de navbar — zelfde look als een nav-link */
+.nav-logout-btn {
+  display: block;
+  background: none;
+  border: none;
+  color: white;
+  padding: 14px 16px;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+
+.nav-logout-btn:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  filter: none;
+  transform: none;
 }

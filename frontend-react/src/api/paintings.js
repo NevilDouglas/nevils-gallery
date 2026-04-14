@@ -7,6 +7,12 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 const API_URL = `${API_BASE_URL}/api/paintings`;
 
+/** Haal het opgeslagen JWT-token op uit localStorage */
+function getAuthHeader() {
+  const token = localStorage.getItem('gallery_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 /**
  * Haalt alle schilderijen op, gesorteerd op ranking.
  * @returns {Promise<Array>} Lijst van schilderijobjecten
@@ -42,7 +48,7 @@ export async function createPainting(data, imageFile) {
   }
   if (imageFile) formData.append('imageFile', imageFile);
 
-  const response = await fetch(API_URL, { method: 'POST', body: formData });
+  const response = await fetch(API_URL, { method: 'POST', headers: getAuthHeader(), body: formData });
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || 'Failed to create painting');
@@ -68,7 +74,7 @@ export async function updatePainting(id, data, imageFile) {
   }
   if (imageFile) formData.append('imageFile', imageFile);
 
-  const response = await fetch(`${API_URL}/${id}`, { method: 'PUT', body: formData });
+  const response = await fetch(`${API_URL}/${id}`, { method: 'PUT', headers: getAuthHeader(), body: formData });
   if (!response.ok) {
     const errorData = await response.json();
     if (errorData.errors) {
@@ -85,7 +91,7 @@ export async function updatePainting(id, data, imageFile) {
  * @returns {Promise<void>} Geen inhoud bij HTTP 204
  */
 export async function deletePainting(id) {
-  const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+  const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE', headers: getAuthHeader() });
   if (response.status === 204) return; // Succesvol verwijderd, geen inhoud
   if (!response.ok) {
     const error = await response.json();
@@ -99,7 +105,7 @@ export async function deletePainting(id) {
  * @returns {Promise<Object>} Bevestigingsbericht van de server
  */
 export async function resetPaintings() {
-  const response = await fetch(`${API_URL}/reset`, { method: 'POST' });
+  const response = await fetch(`${API_URL}/reset`, { method: 'POST', headers: getAuthHeader() });
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || 'Failed to reset paintings');

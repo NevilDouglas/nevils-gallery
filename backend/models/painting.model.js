@@ -49,6 +49,12 @@ module.exports = (sequelize) => {
       allowNull: true,
       field: 'description',
     },
+    // Alt-tekst voor de afbeelding (toegankelijkheid). Als niet opgegeven, wordt de bestandsnaam gebruikt.
+    alt: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: 'alt',
+    },
   }, {
     tableName: 'paintings',           // Naam van de databasetabel
     schema: 'schema_nevils_gallery',  // PostgreSQL-schema
