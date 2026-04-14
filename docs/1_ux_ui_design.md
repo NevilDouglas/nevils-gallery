@@ -14,14 +14,14 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 
 ### Persona 1 — Marieke de Kunstliefhebber
 
-| Kenmerk        | Details                                                    |
-|----------------|------------------------------------------------------------|
-| **Leeftijd**   | 38 jaar                                                    |
-| **Beroep**     | Lerares beeldende kunst, middelbare school                |
-| **Technisch**  | Gemiddeld — gebruikt dagelijks internet en e-mail         |
-| **Doel**       | De schilderijencollectie verkennen, achtergronden lezen   |
-| **Frustratie** | Trage pagina's, onduidelijke navigatie, te veel klikken   |
-| **Apparaat**   | Desktop op school, soms tablet thuis                      |
+| Kenmerk        | Details                                                          |
+|----------------|------------------------------------------------------------------|
+| **Leeftijd**   | 38 jaar                                                          |
+| **Beroep**     | Lerares beeldende kunst, middelbare school                       |
+| **Technisch**  | Gemiddeld — gebruikt dagelijks internet en e-mail                |
+| **Doel**       | De schilderijencollectie verkennen, achtergronden lezen          |
+| **Frustratie** | Trage pagina's, onduidelijke navigatie, te veel klikken          |
+| **Apparaat**   | Desktop op school, soms tablet thuis                             |
 | **Citaat**     | *"Ik wil snel zien welk schilderij het beroemdst is en waarom."* |
 
 ---
@@ -32,11 +32,11 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 |----------------|-----------------------------------------------------------------|
 | **Leeftijd**   | 27 jaar                                                         |
 | **Beroep**     | Stagiair digitaal erfgoed, beheert de online collectie          |
-| **Technisch**  | Gevorderd — werkt dagelijks met CMS-systemen en databases      |
-| **Doel**       | Schilderijen toevoegen, bijwerken, verwijderen en sorteren     |
-| **Frustratie** | Formulieren zonder feedback, knoppen die niets doen, crashes   |
-| **Apparaat**   | Desktop (Windows 11), Chrome                                   |
-| **Citaat**     | *"Ik heb een betrouwbaar systeem nodig — geen verrassingen."* |
+| **Technisch**  | Gevorderd — werkt dagelijks met CMS-systemen en databases       |
+| **Doel**       | Schilderijen toevoegen, bijwerken, verwijderen en sorteren      |
+| **Frustratie** | Formulieren zonder feedback, knoppen die niets doen, crashes    |
+| **Apparaat**   | Desktop (Windows 11), Chrome                                    |
+| **Citaat**     | *"Ik heb een betrouwbaar systeem nodig — geen verrassingen."*   |
 
 ---
 
@@ -46,11 +46,11 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 |----------------|---------------------------------------------------------------|
 | **Leeftijd**   | 22 jaar                                                       |
 | **Beroep**     | Student communicatie                                          |
-| **Technisch**  | Basis — gebruikt voornamelijk social media en YouTube        |
-| **Doel**       | Snel iets interessants vinden om te laten zien aan vrienden  |
-| **Frustratie** | Verwarrende interfaces, te veel tekst, trage laadtijden      |
-| **Apparaat**   | Smartphone (Android), ook laptop                             |
-| **Citaat**     | *"Wauw, mooi plaatje — wat is het verhaal?"*                 |
+| **Technisch**  | Basis — gebruikt voornamelijk social media en YouTube         |
+| **Doel**       | Snel iets interessants vinden om te laten zien aan vrienden   |
+| **Frustratie** | Verwarrende interfaces, te veel tekst, trage laadtijden       |
+| **Apparaat**   | Smartphone (Android), ook laptop                              |
+| **Citaat**     | *"Wauw, mooi plaatje — wat is het verhaal?"*                  |
 
 ---
 

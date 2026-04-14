@@ -18,11 +18,11 @@ De interactieve Swagger-documentatie is live beschikbaar op:
 ### 2.1 Huidige Datastructuur
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                  schema_nevils_gallery                       │
-│                                                             │
+┌────────────────────────────────────────────────────────────┐
+│                  schema_nevils_gallery                     │
+│                                                            │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │                    paintings                          │  │
+│  │                    paintings                         │  │
 │  ├──────────────────┬───────────────┬───────────────────┤  │
 │  │ Kolom            │ Type          │ Constraint        │  │
 │  ├──────────────────┼───────────────┼───────────────────┤  │
@@ -33,8 +33,8 @@ De interactieve Swagger-documentatie is live beschikbaar op:
 │  │ ranking          │ VARCHAR(255)  │ NULLABLE          │  │
 │  │ description      │ TEXT          │ NULLABLE          │  │
 │  └──────────────────┴───────────────┴───────────────────┘  │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+│                                                            │
+└────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.2 Mermaid ERD (uitgebreid ontwerp)
@@ -94,18 +94,18 @@ erDiagram
 │  - MainTablePage    │   JSON       │  /api-docs       ──► swagger │
 │  - MaintenancePage  │              │  /assets/img     ──► static  │
 │  - AboutPage        │              │                              │
-└─────────────────────┘              │  ┌──────────────────────┐   │
-                                     │  │   Sequelize ORM      │   │
-                                     │  │   painting.model.js  │   │
-                                     │  └──────────┬───────────┘   │
-                                     │             │               │
-                                     └─────────────┼───────────────┘
+└─────────────────────┘              │  ┌──────────────────────┐    │
+                                     │  │   Sequelize ORM      │    │
+                                     │  │   painting.model.js  │    │
+                                     │  └──────────┬───────────┘    │
+                                     │             │                │
+                                     └─────────────┼────────────────┘
                                                    │ PostgreSQL
-                                     ┌─────────────▼───────────────┐
+                                     ┌─────────────▼────────────────┐
                                      │   Heroku PostgreSQL          │
                                      │   schema_nevils_gallery      │
                                      │   └── paintings (tabel)      │
-                                     └─────────────────────────────┘
+                                     └──────────────────────────────┘
 ```
 
 ---
@@ -116,7 +116,7 @@ erDiagram
 
 | Omgeving   | URL                                                        |
 |------------|------------------------------------------------------------|
-| Productie  | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com`   |
+| Productie  | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com`    |
 | Lokaal     | `http://localhost:4000`                                    |
 
 ### 4.2 Painting Object Schema
