@@ -22,7 +22,7 @@ export default function HomePage() {
   // Laad de schilderijen bij het mounten van de component
   useEffect(() => {
     fetchPaintings()
-      .then(data => setPreviews(data.slice(0, 8))) // Toon alleen de eerste 8
+      .then(data => setPreviews(data.slice(0, 8))) // Toon alleen de eerste 8 schilderijen
       .catch(() => setError(true));
   }, []);
 
