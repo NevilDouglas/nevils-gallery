@@ -2,7 +2,7 @@
 
 ## Haagse Hogeschool | Software-project | Nevil Douglas
 
-> Deze documentatie is bijgewerkt voor de **herkansing** en beschrijft de huidige staat van de applicatie inclusief Azure-deployment en JWT-authenticatie.
+> Deze documentatie is bijgewerkt voor de **herkansing** en beschrijft de huidige staat van de applicatie inclusief Azure-deployment, Heroku/Netlify-deployment en JWT-authenticatie.
 
 ---
 
@@ -15,7 +15,7 @@
 | 3  | [API CRUD Documentatie & ERD](3_api_crud_documentatie.md) | `3_api_crud_documentatie.md` | ERD-diagram, CRUD-endpoints volledig gedocumenteerd        |
 | 4  | [Security Maatregelen](4_security_maatregelen.md)    | `4_security_maatregelen.md`    | STRIDE + OWASP risico-inventarisatie, preventief/detectief/correctief |
 | 5  | [Ontwikkelproces](5_ontwikkelproces.md)              | `5_ontwikkelproces.md`         | SDLC-cyclus, technologiekeuzes, versiebeheer, CI/CD       |
-| 6  | [Deployment & Security Implementatie](6_deployment_security.md) | `6_deployment_security.md` | Azure App Service, Azure Static Web Apps, JWT-authenticatie |
+| 6  | [Deployment & Security Implementatie](6_deployment_security.md) | `6_deployment_security.md` | Azure App Service, Azure Static Web Apps, Heroku, Netlify, JWT-authenticatie |
 | 7  | [Testplan & Testcases](7_testplan.md)                | `7_testplan.md`                | Handmatige tests, frontend + backend + Azure productie     |
 | —  | [Azure Setup Handleiding](azure-setup.md)            | `azure-setup.md`               | Stap-voor-stap handleiding Azure deployment                |
 
