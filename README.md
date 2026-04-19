@@ -6,6 +6,8 @@ Een full-stack webapplicatie voor het beheren en tonen van een schilderijencolle
 
 **Projectdocumentatie:** [docs/INDEX.md](docs/INDEX.md)
 
+**Wiki:** [nevildouglas.github.io/nevils-gallery](https://nevildouglas.github.io/nevils-gallery/)
+
 ---
 
 ## Inhoudsopgave
