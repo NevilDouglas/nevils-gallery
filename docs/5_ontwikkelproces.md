@@ -14,8 +14,6 @@ Dit document beschrijft het ontwikkelproces van Nevil's Gallery conform de softw
 
 ### 2.1 User Stories
 
-User stories zijn geformuleerd vanuit de drie gedefinieerde persona's (zie Opdracht 1).
-
 #### Als kunstliefhebber (Marieke)
 | ID   | User Story                                                              | Prioriteit |
 |------|-------------------------------------------------------------------------|------------|
@@ -27,48 +25,50 @@ User stories zijn geformuleerd vanuit de drie gedefinieerde persona's (zie Opdra
 #### Als galerij-beheerder (David)
 | ID   | User Story                                                              | Prioriteit |
 |------|-------------------------------------------------------------------------|------------|
-| US05 | Ik wil een nieuw schilderij toevoegen met afbeelding en beschrijving   | Must       |
-| US06 | Ik wil de gegevens van een bestaand schilderij kunnen aanpassen        | Must       |
-| US07 | Ik wil een schilderij kunnen verwijderen                               | Must       |
-| US08 | Ik wil de ranking van schilderijen kunnen aanpassen                    | Must       |
-| US09 | Ik wil de dataset kunnen resetten naar de originele 20 schilderijen    | Should     |
-| US10 | Ik wil niet per ongeluk een schilderij kunnen verwijderen              | Should     |
+| US05 | Ik wil inloggen met een gebruikersnaam en wachtwoord                   | Must       |
+| US06 | Ik wil een nieuw schilderij toevoegen met afbeelding en beschrijving   | Must       |
+| US07 | Ik wil de gegevens van een bestaand schilderij kunnen aanpassen        | Must       |
+| US08 | Ik wil een schilderij kunnen verwijderen                               | Must       |
+| US09 | Ik wil de ranking van schilderijen kunnen aanpassen                    | Must       |
+| US10 | Ik wil de dataset kunnen resetten naar de originele 20 schilderijen    | Should     |
+| US11 | Ik wil niet per ongeluk een schilderij kunnen verwijderen              | Should     |
 
 #### Als casual bezoeker (Lars)
 | ID   | User Story                                                              | Prioriteit |
 |------|-------------------------------------------------------------------------|------------|
-| US11 | Ik wil de galerie bekijken zonder registratie                          | Must       |
-| US12 | Ik wil de applicatie op mijn smartphone kunnen gebruiken               | Should     |
+| US12 | Ik wil de galerie bekijken zonder registratie                          | Must       |
+| US13 | Ik wil de applicatie op mijn smartphone kunnen gebruiken               | Should     |
 
 ### 2.2 Functionele Requirements
 
-| ID   | Requirement                                                           | User Story |
-|------|-----------------------------------------------------------------------|------------|
-| FR01 | De homepagina toont de eerste 8 schilderijen op volgorde van ranking | US01       |
-| FR02 | Elk schilderij toont afbeelding, titel, kunstenaar en beschrijving   | US02       |
-| FR03 | De overzichtstabel ondersteunt sortering op alle kolommen            | US04       |
-| FR04 | De overzichtstabel ondersteunt filtering per kolom                   | US03       |
-| FR05 | Beheerders kunnen een schilderij aanmaken via een formulier          | US05       |
-| FR06 | Beheerders kunnen een schilderij bewerken via een formulier          | US06       |
-| FR07 | Beheerders kunnen een schilderij verwijderen na bevestiging          | US07       |
-| FR08 | Bij rankingwijziging worden andere rankings automatisch bijgewerkt   | US08       |
-| FR09 | De dataset kan worden gereset via een knop                           | US09       |
-| FR10 | Een bevestigingsmodal verschijnt vóór verwijdering                   | US10       |
-| FR11 | De API retourneert JSON-responses                                     | US05–09    |
-| FR12 | De applicatie is toegankelijk via een publieke URL                   | US11, US12 |
+| ID   | Requirement                                                           | Status |
+|------|-----------------------------------------------------------------------|--------|
+| FR01 | De homepagina toont de eerste 8 schilderijen op volgorde van ranking | ✅ |
+| FR02 | Elk schilderij toont afbeelding, titel, kunstenaar en beschrijving   | ✅ |
+| FR03 | De overzichtstabel ondersteunt sortering op alle kolommen            | ✅ |
+| FR04 | De overzichtstabel ondersteunt filtering per kolom                   | ✅ |
+| FR05 | Beheerders kunnen inloggen via een loginpagina                       | ✅ |
+| FR06 | Beheerders kunnen een schilderij aanmaken via een formulier          | ✅ |
+| FR07 | Beheerders kunnen een schilderij bewerken via een formulier          | ✅ |
+| FR08 | Beheerders kunnen een schilderij verwijderen na bevestiging          | ✅ |
+| FR09 | Bij rankingwijziging worden andere rankings automatisch bijgewerkt   | ✅ |
+| FR10 | De dataset kan worden gereset via een knop                           | ✅ |
+| FR11 | Een bevestigingsmodal verschijnt vóór verwijdering                   | ✅ |
+| FR12 | De API retourneert JSON-responses                                     | ✅ |
+| FR13 | De applicatie is toegankelijk via een publieke URL                   | ✅ |
 
 ### 2.3 Niet-functionele Requirements
 
-| ID    | Requirement                                                           | Categorie      |
-|-------|-----------------------------------------------------------------------|----------------|
-| NFR01 | De API reageert binnen 2 seconden op een standaard GET-aanroep       | Performance    |
-| NFR02 | De applicatie is beschikbaar op desktop en mobiel                    | Usability      |
-| NFR03 | Gevoelige configuratie is niet zichtbaar in de broncode              | Security       |
-| NFR04 | De API is gedocumenteerd via Swagger/OpenAPI 3.0                     | Maintainability|
-| NFR05 | De backend is gedeployed op Heroku                                   | Deployment     |
-| NFR06 | De frontend is gedeployed op Netlify / Azure Static Web Apps         | Deployment     |
-| NFR07 | Data wordt permanent opgeslagen in PostgreSQL                        | Reliability    |
-| NFR08 | De codebase is onder versiebeheer met Git/GitHub                     | Process        |
+| ID    | Requirement                                                           | Status |
+|-------|-----------------------------------------------------------------------|--------|
+| NFR01 | De API reageert binnen 2 seconden op een standaard GET-aanroep       | ✅ |
+| NFR02 | De applicatie is beschikbaar op desktop en mobiel                    | ✅ |
+| NFR03 | Gevoelige configuratie is niet zichtbaar in de broncode              | ✅ |
+| NFR04 | De API is gedocumenteerd via Swagger/OpenAPI 3.0                     | ✅ |
+| NFR05 | De backend is gedeployed op Azure App Service                        | ✅ |
+| NFR06 | De frontend is gedeployed op Azure Static Web Apps                   | ✅ |
+| NFR07 | Data wordt permanent opgeslagen in PostgreSQL (Neon)                 | ✅ |
+| NFR08 | De codebase is onder versiebeheer met Git/GitHub                     | ✅ |
 
 ---
 
@@ -79,41 +79,24 @@ User stories zijn geformuleerd vanuit de drie gedefinieerde persona's (zie Opdra
 | Laag             | Technologie          | Motivatie                                                            |
 |------------------|----------------------|----------------------------------------------------------------------|
 | **Backend**      | Node.js + Express.js | JavaScript full-stack, lichtgewicht, opdrachtvereiste               |
-| **Database**     | PostgreSQL           | ACID-garanties, gratis op Heroku, UUID-ondersteuning                |
+| **Database**     | PostgreSQL (Neon)    | ACID-garanties, gratis cloud-tier, UUID-ondersteuning               |
 | **ORM**          | Sequelize v6         | Abstractie over SQL, modelgedreven development                       |
+| **Auth**         | JWT + bcryptjs       | Stateless tokens, veilige wachtwoord-opslag                         |
 | **Bestandsupload** | Multer             | Industriestandaard voor multipart uploads in Express                |
 | **API Docs**     | Swagger/OpenAPI 3.0  | Interactieve documentatie, opdrachtvereiste                         |
 | **Frontend**     | React 18 + Vite      | Component-gebaseerd, snelle build, moderne DX                       |
 | **Routing**      | React Router v6      | Client-side routing voor SPA                                         |
-| **Legacy frontend** | Vanilla JS        | Oorspronkelijk prototype, werkt lokaal zonder buildstap              |
-| **Deployment backend** | Heroku        | Gratis PaaS, eenvoudige PostgreSQL add-on                           |
-| **Deployment frontend** | Netlify      | Gratis CDN, eenvoudige GitHub Actions integratie                    |
-| **Azure alt.**   | Azure Static Web Apps | Alternatieve frontend-deployment voor Azure-opdracht               |
+| **Deployment backend** | Azure App Service (Basic B1) | Betrouwbaar, geen dagelijkse CPU-limiet, Always On beschikbaar |
+| **Deployment frontend** | Azure Static Web Apps | Gratis CDN, ingebouwde SPA-ondersteuning                 |
+| **Database hosting** | Neon PostgreSQL | Gratis cloud PostgreSQL, geen server beheer                        |
 | **Versiebeheer** | Git + GitHub         | Industriestandaard, gratis                                           |
 | **CI/CD**        | GitHub Actions       | Geautomatiseerde deployment bij push naar `main`                    |
-| **Omgevingsvariabelen** | dotenv      | Standaard voor Node.js configuratiebeheer                           |
 
 ### 3.2 Architectuurkeuze
 
-**Monorepo-structuur** is gekozen: frontend en backend leven in dezelfde repository (`nevils-gallery/`), maar worden onafhankelijk gedeployed. Voordelen:
-- Eén overzichtelijke repository voor het schoolproject.
-- Eenvoudig om code te vergelijken en te linken.
-- CI/CD-workflows worden geactiveerd op basis van gewijzigde paden.
+**Monorepo-structuur:** frontend en backend leven in dezelfde repository, maar worden onafhankelijk gedeployed.
 
-**REST API** is gekozen boven GraphQL vanwege:
-- Eenvoud voor een CRUD-applicatie.
-- Betere compatibiliteit met Swagger/OpenAPI.
-- Lagere leercurve.
-
-### 3.3 Ontwerpdocumenten
-
-| Document                              | Locatie                                      |
-|---------------------------------------|----------------------------------------------|
-| UX/UI ontwerp & persona's (5 E's)    | `docs/1_ux_ui_design.md`                    |
-| Backend ontwerp & requirements        | `docs/2_backend_ontwerp.md`                 |
-| ERD & API CRUD documentatie           | `docs/3_api_crud_documentatie.md`           |
-| Security maatregelen                  | `docs/4_security_maatregelen.md`            |
-| Swagger UI (live)                     | `/api-docs` op de backend-URL               |
+**REST API** gekozen boven GraphQL — eenvoud voor een CRUD-applicatie, betere Swagger-compatibiliteit.
 
 ---
 
@@ -121,62 +104,69 @@ User stories zijn geformuleerd vanuit de drie gedefinieerde persona's (zie Opdra
 
 ### 4.1 Ontwikkelingsvolgorde
 
-Het project is iteratief ontwikkeld in de volgende volgorde:
-
 ```
 1. Database schema ontwerp
-   └── dump.sql, painting.model.js
+   └── dump.sql, painting.model.js, user.model.js
 
 2. Backend API (Express + Sequelize)
    └── server.js, routes, controllers, middleware
 
-3. Vanilla JS Frontend (prototype)
+3. Authenticatie (JWT)
+   └── auth.controller.js, auth.middleware.js, auth.routes.js
+
+4. Vanilla JS Frontend (prototype)
    └── frontend/ (index.html, main_table.html, maintenance.html)
 
-4. Swagger documentatie
+5. Swagger documentatie
    └── swagger.js, JSDoc annotaties in routes
 
-5. React Frontend (productieversie)
-   └── frontend-react/ (components, pages, hooks)
+6. React Frontend (productieversie)
+   └── frontend-react/ (components, pages, hooks, loginpagina)
 
-6. CI/CD & Deployment
-   └── .github/workflows/, Heroku, Netlify, Azure
+7. CI/CD & Deployment
+   └── .github/workflows/, Azure App Service, Azure Static Web Apps
 ```
 
 ### 4.2 Git Workflow
 
-**Branch strategie:** Directe commits naar `main` (voor schoolproject acceptabel).  
-**CI/CD triggers:** GitHub Actions wordt geactiveerd bij pushes naar `main` op specifieke paden:
-- `backend/**` → deploy naar Heroku
-- `frontend-react/**` → build + deploy naar Netlify
-
-**Recente commits (voorbeelden):**
-```
-b4141d4  READ.me uitgebreid
-acef6d4  Full commenting en Swagger-ready gemaakt
-443567d  Edited image schaalbaar gemaakt
-621fbd1  dump.sql toegevoegd aan de root
-```
+**Branch strategie:** Directe commits naar `main`.  
+**CI/CD triggers:** GitHub Actions geactiveerd bij pushes naar `main`:
+- `backend/**` → deploy naar Azure App Service
+- `frontend-react/**` → build + deploy naar Azure Static Web Apps
 
 ### 4.3 Codestructuur
 
 ```
 nevils-gallery/
 ├── backend/
-│   ├── config/database.js      # Sequelize + PostgreSQL configuratie
-│   ├── controllers/            # Business logica (CRUD operaties)
-│   ├── middleware/upload.js    # Multer bestandsupload
-│   ├── models/                 # Sequelize datamodel
-│   ├── routes/                 # Express routes + Swagger annotaties
-│   ├── swagger.js              # OpenAPI spec configuratie
-│   └── server.js               # App entry point
-├── frontend/                   # Vanilla JS frontend (prototype)
-├── frontend-react/             # React + Vite frontend (productie)
-│   ├── src/api/                # API-aanroepen
-│   ├── src/components/         # Herbruikbare UI-componenten
-│   ├── src/hooks/              # Custom React hooks
-│   └── src/pages/              # Pagina-componenten
-└── docs/                       # Projectdocumentatie (opdrachten 1–7)
+│   ├── config/database.js
+│   ├── controllers/
+│   │   ├── painting.controller.js
+│   │   └── auth.controller.js
+│   ├── middleware/
+│   │   ├── upload.js
+│   │   └── auth.middleware.js
+│   ├── models/
+│   │   ├── index.js
+│   │   ├── painting.model.js
+│   │   └── user.model.js
+│   ├── routes/
+│   │   ├── painting.routes.js
+│   │   └── auth.routes.js
+│   └── server.js
+├── frontend-react/
+│   ├── public/staticwebapp.config.json
+│   └── src/
+│       ├── api/
+│       ├── components/
+│       ├── hooks/
+│       └── pages/
+├── docs/
+└── .github/workflows/
+    ├── deploy-backend-azure.yml     ← Azure App Service (primair)
+    ├── deploy-frontend-azure.yml    ← Azure Static Web Apps (primair)
+    ├── deploy-backend.yml           ← Heroku (alternatief)
+    └── deploy-frontend.yml          ← Netlify (alternatief)
 ```
 
 ---
@@ -187,15 +177,10 @@ nevils-gallery/
 
 **Uitgevoerde tests:**
 - Handmatige API-tests via Swagger UI (`/api-docs`)
-- Handmatige frontend-tests in Chrome/Edge (desktop)
-- Functionele CRUD-tests via de beheerpagina
+- Handmatige frontend-tests in Chrome (desktop + mobile emulatie)
+- Functionele CRUD-tests via de beheerpagina (inclusief login)
 - Verificatie van ranking-shift logica
-
-**Testgap (nog te vullen):**
-- Geautomatiseerde unit tests (Jest/Vitest)
-- Geautomatiseerde integratietests
-- End-to-end tests (bijv. Playwright/Cypress)
-- Load/performance tests
+- Integratietests op Azure-productieomgeving
 
 ---
 
@@ -203,65 +188,61 @@ nevils-gallery/
 
 ### 6.1 Omgevingen
 
-| Omgeving  | Backend URL                                                        | Frontend URL                                         |
-|-----------|--------------------------------------------------------------------|------------------------------------------------------|
-| Productie | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com`          | `https://sparkling-kleicha-32eb8d.netlify.app/`     |
-| Lokaal    | `http://localhost:4000`                                            | `http://localhost:5173` (Vite dev server)            |
+| Omgeving  | Backend URL | Frontend URL |
+|-----------|-------------|--------------|
+| Azure (productie) | `https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net` | `https://zealous-cliff-06a306e03.7.azurestaticapps.net` |
+| Netlify (alternatief) | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com` | `https://sparkling-kleicha-32eb8d.netlify.app` |
+| Lokaal    | `http://localhost:4000` | `http://localhost:5173` |
 
-### 6.2 Deployment Pipeline
+### 6.2 Deployment Pipeline (Azure)
 
 ```
 Developer pushes naar main
           │
           ├─ backend/** gewijzigd?
-          │   └── GitHub Actions: deploy-backend.yml
+          │   └── GitHub Actions: deploy-backend-azure.yml
           │         ├── checkout
-          │         └── heroku-deploy (akhileshns/heroku-deploy@v3.13.15)
-          │               └── Heroku App (Node.js buildpack)
+          │         ├── npm ci
+          │         └── azure/webapps-deploy@v2
+          │               └── Azure App Service (Basic B1)
           │
           └─ frontend-react/** gewijzigd?
-              └── GitHub Actions: deploy-frontend.yml
+              └── GitHub Actions: deploy-frontend-azure.yml
                     ├── checkout
-                    ├── npm ci
-                    ├── npm run build (Vite, met VITE_API_BASE_URL secret)
-                    └── Netlify CLI deploy (dist/)
+                    ├── npm ci + npm run build (met VITE_API_BASE_URL_AZURE)
+                    └── Azure/static-web-apps-deploy@v1
+                          └── Azure Static Web Apps
 ```
 
 ### 6.3 Vereiste GitHub Secrets
 
-| Secret               | Gebruik                                              |
-|----------------------|------------------------------------------------------|
-| `HEROKU_API_KEY`     | Authenticatie met Heroku API                        |
-| `HEROKU_APP_NAME`    | Naam van de Heroku-applicatie                       |
-| `HEROKU_EMAIL`       | E-mailadres gekoppeld aan Heroku-account            |
-| `NETLIFY_AUTH_TOKEN` | Authenticatie met Netlify API                       |
-| `NETLIFY_SITE_ID`    | Identifier van de Netlify-site                      |
-| `VITE_API_BASE_URL`  | Backend-URL, ingebakken in de React-bundle tijdens build |
+| Secret | Gebruik |
+|--------|---------|
+| `AZURE_WEBAPP_NAME` | Naam Azure App Service |
+| `AZURE_WEBAPP_PUBLISH_PROFILE` | Publish profile Azure App Service |
+| `AZURE_STATIC_WEB_APPS_API_TOKEN` | Deployment token Azure Static Web Apps |
+| `VITE_API_BASE_URL_AZURE` | Backend-URL ingebakken in React-bundle |
 
-### 6.4 Azure Static Web Apps
+### 6.4 Azure Configuratie
 
-Het bestand `frontend-react/staticwebapp.config.json` configureert fallback routing voor de React SPA op Azure:
-```json
-{
-  "routes": [
-    { "route": "/*", "serve": "/index.html", "statusCode": 200 }
-  ]
-}
-```
-Dit zorgt ervoor dat directe URL-navigatie (bijv. naar `/maintenance`) correct werkt in de SPA zonder 404.
+**App Service:** Basic B1 plan, Always On uitgeschakeld (app slaapt na inactiviteit — bespaart credits).  
+**Database:** Neon PostgreSQL (cloud), verbonden via `DATABASE_URL` in Azure App Settings.  
+**MIME types:** `staticwebapp.config.json` in `frontend-react/public/` configureert correcte MIME types voor JavaScript-bestanden en SPA-routing fallback.
 
 ---
 
 ## 7. Feedback & Iteraties
 
 ### 7.1 Procesverbeteringen
-- **Vanilla JS → React:** Op basis van de behoefte aan een meer onderhoudbare frontend is de vanilla JS-versie vervangen door een React/Vite-versie met component-gebaseerde architectuur.
-- **Hardcoded URL → Omgevingsvariabele:** De API-URL in de frontend is gemigreerd van hardcoded `localhost:4000` (in `frontend/js/api.js`) naar een Vite-omgevingsvariabele (`VITE_API_BASE_URL` in `frontend-react/src/api/paintings.js`), zodat productie en ontwikkeling verschillende backends kunnen aanspreken.
-- **Code commentaren & Swagger:** Op basis van feedbackrondes zijn alle backend-bestanden volledig voorzien van JSDoc-commentaren en Swagger-annotaties.
-- **dump.sql toegevoegd:** Na initiële deployment is het volledige databaseschema gedocumenteerd in `dump.sql` voor reproduceerbaarheid.
+- **Free tier → Basic B1:** Azure Free tier (F1) heeft een limiet van 60 CPU-minuten per dag. Overgezet naar Basic B1 binnen de schoolsubscriptie (`ITD_HBO-ICT-DevTest`, resourcegroep `rg-se-dt-s6-group3`) om betrouwbare uptime te garanderen.
+- **Heroku → Azure:** Backend gemigreerd van Heroku naar Azure App Service voor betere integratie met de schoolomgeving.
+- **Neon database:** Database gemigreerd naar Neon PostgreSQL cloud voor onafhankelijkheid van platform-specifieke add-ons.
+- **Authenticatie geïmplementeerd:** JWT-login toegevoegd zodat de beheerpagina beveiligd is.
+- **MIME type fix:** `staticwebapp.config.json` verplaatst naar `public/` zodat Vite het automatisch naar `dist/` kopieert.
+- **Rate limiting toegevoegd:** `express-rate-limit` geïmplementeerd (max 100 verzoeken per 15 minuten per IP) als bescherming tegen brute force en DoS-aanvallen.
+- **Security headers toegevoegd:** `helmet` geïmplementeerd voor automatische beveiligingsheaders (CSP, X-Frame-Options, HSTS, etc.).
 
 ### 7.2 Nog te verbeteren
-- Gebruikersauthenticatie implementeren (zie Opdracht 6)
-- Geautomatiseerde testcoverage toevoegen (zie Opdracht 7)
-- Branch-protectieregel op `main` instellen in GitHub
-- CORS beperken tot bekende origins in productie
+- CORS beperken tot bekende origins
+- Geautomatiseerde testcoverage toevoegen
+- npm audit integreren in CI/CD pipeline

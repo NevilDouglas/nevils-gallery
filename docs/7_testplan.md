@@ -6,12 +6,17 @@
 
 ## 1. Inleiding
 
-Dit document beschrijft het testplan voor Nevil's Gallery. Tests worden uitgevoerd om te verifiëren dat de applicatie voldoet aan de functionele en niet-functionele requirements (zie Opdracht 5). Er wordt aandacht besteed aan backend-tests, frontend-tests en integratietests. Waar mogelijk wordt het testproces geautomatiseerd.
+Dit document beschrijft het testplan voor Nevil's Gallery. Tests worden uitgevoerd om te verifiëren dat de applicatie voldoet aan de functionele en niet-functionele requirements (zie Opdracht 5). Er wordt aandacht besteed aan backend-tests, frontend-tests en integratietests.
 
 **Testomgeving:**
-- Backend: `http://localhost:4000` (lokaal) / `https://nevils-gallery-api-456cfdb93e97.herokuapp.com` (productie)
-- Frontend: `http://localhost:5173` (Vite dev server) / `https://sparkling-kleicha-32eb8d.netlify.app`
-- Database: PostgreSQL lokaal / Heroku PostgreSQL
+
+| Omgeving | Backend | Frontend |
+|----------|---------|----------|
+| **Lokaal** | `http://localhost:4000` | `http://localhost:5173` |
+| **Azure (primair)** | `https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net` | `https://zealous-cliff-06a306e03.7.azurestaticapps.net` |
+| **Netlify/Heroku** | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com` | `https://sparkling-kleicha-32eb8d.netlify.app` |
+
+**Database:** Neon PostgreSQL (cloud), `schema_nevils_gallery`
 
 ---
 
@@ -28,15 +33,82 @@ Dit document beschrijft het testplan voor Nevil's Gallery. Tests worden uitgevoe
 
 ### 2.2 Testaanpak
 
-**Prioritering:** Kritieke paden eerst (CRUD-operaties, ranking-shift, reset), daarna edge cases en foutscenario's.
+**Prioritering:** Kritieke paden eerst (authenticatie, CRUD-operaties, ranking-shift, reset), daarna edge cases en foutscenario's.
 
 **Regressie:** Na elke wijziging worden alle kritieke testcases opnieuw uitgevoerd om regressies te detecteren.
 
 ---
 
-## 3. Backend API Testcases
+## 3. Authenticatie Testcases
 
-### 3.1 TC-BE-01: Alle schilderijen ophalen
+### 3.1 TC-AUTH-01: Inloggen met geldige credentials
+
+| Attribuut     | Waarde                                                      |
+|---------------|-------------------------------------------------------------|
+| **ID**        | TC-AUTH-01                                                  |
+| **Endpoint**  | `POST /api/auth/login`                                      |
+| **Body**      | `{ "username": "admin@example.com", "password": "passwordadmin" }` |
+| **Verwacht**  | HTTP 200, JSON met `token` en `user.isAdmin: true`         |
+| **Status**    | ✅ Geslaagd (getest op Azure productie)                     |
+
+**Verificatie:**
+```bash
+curl -X POST https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin@example.com","password":"passwordadmin"}'
+# → HTTP 200, { "token": "eyJ...", "user": { "isAdmin": true } }
+```
+
+---
+
+### 3.2 TC-AUTH-02: Inloggen met ongeldige credentials
+
+| Attribuut     | Waarde                                                           |
+|---------------|------------------------------------------------------------------|
+| **ID**        | TC-AUTH-02                                                       |
+| **Body**      | `{ "username": "admin@example.com", "password": "verkeerd" }`  |
+| **Verwacht**  | HTTP 401, `{ "error": "Ongeldige inloggegevens." }`             |
+| **Status**    | ✅ Geslaagd                                                      |
+
+---
+
+### 3.3 TC-AUTH-03: Beveiligd endpoint aanroepen zonder token
+
+| Attribuut     | Waarde                                                          |
+|---------------|-----------------------------------------------------------------|
+| **ID**        | TC-AUTH-03                                                      |
+| **Stappen**   | Stuur `POST /api/paintings` zonder `Authorization` header      |
+| **Verwacht**  | HTTP 401 Unauthorized                                           |
+| **Doel**      | Verifieert dat de auth middleware actief is                     |
+| **Status**    | ✅ Geslaagd                                                     |
+
+---
+
+### 3.4 TC-AUTH-04: Frontend — Loginpagina redirect
+
+| Attribuut     | Waarde                                                                 |
+|---------------|------------------------------------------------------------------------|
+| **ID**        | TC-AUTH-04                                                             |
+| **Stappen**   | Navigeer direct naar `/maintenance` zonder ingelogd te zijn           |
+| **Verwacht**  | Automatische redirect naar de loginpagina (`/login`)                  |
+| **Status**    | ✅ Geslaagd                                                            |
+
+---
+
+### 3.5 TC-AUTH-05: Frontend — Succesvol inloggen
+
+| Attribuut     | Waarde                                                                      |
+|---------------|-----------------------------------------------------------------------------|
+| **ID**        | TC-AUTH-05                                                                  |
+| **Stappen**   | 1. Ga naar de loginpagina <br> 2. Vul `admin@example.com` / `passwordadmin` in <br> 3. Klik "Inloggen" |
+| **Verwacht**  | Redirect naar `/maintenance`, beheerpagina toont schilderijen              |
+| **Status**    | ✅ Geslaagd (getest op Azure productie)                                     |
+
+---
+
+## 4. Backend API Testcases
+
+### 4.1 TC-BE-01: Alle schilderijen ophalen
 
 | Attribuut     | Waarde                                                  |
 |---------------|---------------------------------------------------------|
@@ -46,18 +118,18 @@ Dit document beschrijft het testplan voor Nevil's Gallery. Tests worden uitgevoe
 | **Precondities** | Server actief, database bevat schilderijen          |
 | **Stappen**   | Stuur GET request naar `/api/paintings`                |
 | **Verwacht**  | HTTP 200, JSON-array, gesorteerd op ranking ASC        |
-| **Criteria**  | Array niet leeg, eerste element heeft ranking "1"      |
-| **Status**    | ✅ Geslaagd (handmatig via Swagger UI en browser)      |
+| **Criteria**  | Array bevat 20 elementen, eerste heeft ranking "1"     |
+| **Status**    | ✅ Geslaagd (handmatig via Swagger UI en Azure productie) |
 
 **Verificatie:**
 ```bash
-curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
+curl https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net/api/paintings
 # → HTTP 200, array van 20 schilderijen, ranking[0] = "1"
 ```
 
 ---
 
-### 3.2 TC-BE-02: Één schilderij ophalen (geldig UUID)
+### 4.2 TC-BE-02: Één schilderij ophalen (geldig UUID)
 
 | Attribuut     | Waarde                                                             |
 |---------------|--------------------------------------------------------------------|
@@ -68,7 +140,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.3 TC-BE-03: Één schilderij ophalen (ongeldig UUID)
+### 4.3 TC-BE-03: Één schilderij ophalen (ongeldig UUID)
 
 | Attribuut     | Waarde                                                  |
 |---------------|---------------------------------------------------------|
@@ -80,7 +152,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.4 TC-BE-04: Één schilderij ophalen (niet bestaand)
+### 4.4 TC-BE-04: Één schilderij ophalen (niet bestaand)
 
 | Attribuut     | Waarde                                                          |
 |---------------|-----------------------------------------------------------------|
@@ -91,12 +163,13 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.5 TC-BE-05: Schilderij aanmaken (zonder afbeelding)
+### 4.5 TC-BE-05: Schilderij aanmaken (zonder afbeelding)
 
 | Attribuut     | Waarde                                                         |
 |---------------|----------------------------------------------------------------|
 | **ID**        | TC-BE-05                                                       |
 | **Endpoint**  | `POST /api/paintings`                                          |
+| **Auth**      | `Authorization: Bearer <token>`                               |
 | **Body**      | `title=Test, artist=Test Artist, ranking=21, description=...` |
 | **Verwacht**  | HTTP 201, nieuw schilderij-object met gegenereerd UUID        |
 | **Cleanup**   | Verwijder het aangemaakte schilderij via DELETE               |
@@ -104,7 +177,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.6 TC-BE-06: Ranking-shift bij aanmaken
+### 4.6 TC-BE-06: Ranking-shift bij aanmaken
 
 | Attribuut     | Waarde                                                                        |
 |---------------|-------------------------------------------------------------------------------|
@@ -117,12 +190,13 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.7 TC-BE-07: Schilderij bijwerken
+### 4.7 TC-BE-07: Schilderij bijwerken
 
 | Attribuut     | Waarde                                                                    |
 |---------------|---------------------------------------------------------------------------|
 | **ID**        | TC-BE-07                                                                  |
 | **Endpoint**  | `PUT /api/paintings/671fa6fd-da4a-4d28-b4f4-065e7500ece7`               |
+| **Auth**      | `Authorization: Bearer <token>`                                          |
 | **Body**      | `description=Updated description for testing`                            |
 | **Verwacht**  | HTTP 200, bijgewerkt object met nieuwe description                       |
 | **Cleanup**   | Reset beschrijving terug                                                  |
@@ -130,7 +204,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.8 TC-BE-08: Ranking-shift bij bijwerken (omhoog)
+### 4.8 TC-BE-08: Ranking-shift bij bijwerken (omhoog)
 
 | Attribuut     | Waarde                                                                         |
 |---------------|--------------------------------------------------------------------------------|
@@ -143,11 +217,12 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.9 TC-BE-09: Schilderij verwijderen
+### 4.9 TC-BE-09: Schilderij verwijderen
 
 | Attribuut     | Waarde                                                                   |
 |---------------|--------------------------------------------------------------------------|
 | **ID**        | TC-BE-09                                                                 |
+| **Auth**      | `Authorization: Bearer <token>`                                         |
 | **Stappen**   | 1. POST nieuw schilderij <br> 2. Noteer UUID <br> 3. DELETE schilderij  |
 | **Verwacht**  | HTTP 204 No Content                                                      |
 | **Verifieer** | GET /:id geeft HTTP 404                                                  |
@@ -155,11 +230,12 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.10 TC-BE-10: Dataset resetten
+### 4.10 TC-BE-10: Dataset resetten
 
 | Attribuut     | Waarde                                                               |
 |---------------|----------------------------------------------------------------------|
 | **ID**        | TC-BE-10                                                             |
+| **Auth**      | `Authorization: Bearer <token>`                                     |
 | **Stappen**   | 1. POST nieuw schilderij <br> 2. POST /reset <br> 3. GET /paintings |
 | **Verwacht**  | HTTP 200, response bevat precies 20 schilderijen                    |
 | **Verifieer** | Toegevoegd schilderij is niet meer aanwezig                         |
@@ -167,7 +243,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 3.11 TC-BE-11: Schilderij aanmaken met afbeelding
+### 4.11 TC-BE-11: Schilderij aanmaken met afbeelding
 
 | Attribuut     | Waarde                                                              |
 |---------------|---------------------------------------------------------------------|
@@ -180,9 +256,9 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-## 4. Frontend Testcases
+## 5. Frontend Testcases
 
-### 4.1 TC-FE-01: Homepagina — Schilderijen laden
+### 5.1 TC-FE-01: Homepagina — Schilderijen laden
 
 | Attribuut     | Waarde                                                     |
 |---------------|------------------------------------------------------------|
@@ -195,7 +271,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.2 TC-FE-02: Overzichtstabel — Sortering
+### 5.2 TC-FE-02: Overzichtstabel — Sortering
 
 | Attribuut     | Waarde                                                            |
 |---------------|-------------------------------------------------------------------|
@@ -209,23 +285,24 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.3 TC-FE-03: Overzichtstabel — Filtering
+### 5.3 TC-FE-03: Overzichtstabel — Filtering
 
 | Attribuut     | Waarde                                                                  |
 |---------------|-------------------------------------------------------------------------|
 | **ID**        | TC-FE-03                                                                |
 | **Pagina**    | Overzichtstabel (`/main_table`)                                         |
-| **Stappen**   | 1. Typ "van Gogh" in het filterinputveld onder de kolom "Artist"       |
+| **Stappen**   | Typ "van Gogh" in het filterinputveld onder de kolom "Artist"          |
 | **Verwacht**  | Alleen schilderijen van Van Gogh zijn zichtbaar (verwacht: 3 rijen)   |
 | **Status**    | ✅ Geslaagd                                                             |
 
 ---
 
-### 4.4 TC-FE-04: Beheerpagina — Schilderij aanmaken
+### 5.4 TC-FE-04: Beheerpagina — Schilderij aanmaken
 
 | Attribuut     | Waarde                                                                       |
 |---------------|------------------------------------------------------------------------------|
 | **ID**        | TC-FE-04                                                                     |
+| **Precondities** | Ingelogd als beheerder                                                    |
 | **Pagina**    | Beheerpagina (`/maintenance`)                                                |
 | **Stappen**   | 1. Vul formulier in (titel, kunstenaar, ranking, beschrijving) <br> 2. Klik "Opslaan" |
 | **Verwacht**  | Nieuw schilderij-kaart verschijnt in de lijst                               |
@@ -233,11 +310,12 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.5 TC-FE-05: Beheerpagina — Schilderij verwijderen (met bevestiging)
+### 5.5 TC-FE-05: Beheerpagina — Schilderij verwijderen (met bevestiging)
 
 | Attribuut     | Waarde                                                                    |
 |---------------|---------------------------------------------------------------------------|
 | **ID**        | TC-FE-05                                                                  |
+| **Precondities** | Ingelogd als beheerder                                                 |
 | **Stappen**   | 1. Klik "Verwijder" op een schilderij-kaart <br> 2. Bevestigingsmodal verschijnt <br> 3. Klik "Annuleren" |
 | **Verwacht**  | Schilderij is NIET verwijderd — modal sluit, kaart blijft zichtbaar      |
 | **Stap 2b**   | Klik "Bevestigen" in de modal                                             |
@@ -246,7 +324,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.6 TC-FE-06: Navigatie — Actieve pagina-markering
+### 5.6 TC-FE-06: Navigatie — Actieve pagina-markering
 
 | Attribuut     | Waarde                                                              |
 |---------------|---------------------------------------------------------------------|
@@ -257,7 +335,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.7 TC-FE-07: Live Datum/Tijd weergave
+### 5.7 TC-FE-07: Live Datum/Tijd weergave
 
 | Attribuut     | Waarde                                                          |
 |---------------|-----------------------------------------------------------------|
@@ -268,7 +346,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 4.8 TC-FE-08: Responsiviteit op mobiel
+### 5.8 TC-FE-08: Responsiviteit op mobiel
 
 | Attribuut     | Waarde                                                                        |
 |---------------|-------------------------------------------------------------------------------|
@@ -279,58 +357,80 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-## 5. Integratietests
+## 6. Integratietests (Azure Productie)
 
-### 5.1 TC-INT-01: Frontend-Backend Verbinding (productie)
+### 6.1 TC-INT-01: Frontend-Backend Verbinding Azure
 
-| Attribuut     | Waarde                                                              |
-|---------------|---------------------------------------------------------------------|
-| **ID**        | TC-INT-01                                                           |
-| **Beschrijving** | Verifieer dat de React-frontend op Netlify de Heroku-backend bereikt |
-| **Stappen**   | Open `https://sparkling-kleicha-32eb8d.netlify.app/` in browser   |
-| **Verwacht**  | Homepagina laadt 8 schilderijen — data komt van Heroku              |
-| **Verifieer** | Browser DevTools → Network → XHR-aanroepen naar `*.herokuapp.com`  |
-| **Status**    | ✅ Geslaagd                                                         |
+| Attribuut     | Waarde                                                                      |
+|---------------|-----------------------------------------------------------------------------|
+| **ID**        | TC-INT-01                                                                   |
+| **Beschrijving** | Verifieer dat de React-frontend op Azure SWA de Azure App Service backend bereikt |
+| **Stappen**   | Open `https://zealous-cliff-06a306e03.7.azurestaticapps.net/` in browser  |
+| **Verwacht**  | Homepagina laadt 8 schilderijen — data komt van Azure backend               |
+| **Verifieer** | Browser DevTools → Network → XHR-aanroepen naar `*.azurewebsites.net`      |
+| **Status**    | ✅ Geslaagd                                                                  |
 
 ---
 
-### 5.2 TC-INT-02: Afbeeldingen bereikbaar na upload
+### 6.2 TC-INT-02: Frontend-Backend Verbinding Netlify/Heroku
+
+| Attribuut     | Waarde                                                                      |
+|---------------|-----------------------------------------------------------------------------|
+| **ID**        | TC-INT-02                                                                   |
+| **Stappen**   | Open `https://sparkling-kleicha-32eb8d.netlify.app/` in browser           |
+| **Verwacht**  | Homepagina laadt 8 schilderijen — data komt van Heroku backend              |
+| **Status**    | ✅ Geslaagd                                                                  |
+
+---
+
+### 6.3 TC-INT-03: Login op Azure productie
+
+| Attribuut     | Waarde                                                                        |
+|---------------|-------------------------------------------------------------------------------|
+| **ID**        | TC-INT-03                                                                     |
+| **Stappen**   | 1. Ga naar `https://zealous-cliff-06a306e03.7.azurestaticapps.net/login` <br> 2. Vul `admin@example.com` / `passwordadmin` in <br> 3. Klik "Inloggen" |
+| **Verwacht**  | JWT-token ontvangen, redirect naar beheerpagina met schilderijen             |
+| **Status**    | ✅ Geslaagd                                                                   |
+
+---
+
+### 6.4 TC-INT-04: Afbeeldingen bereikbaar na upload
 
 | Attribuut     | Waarde                                                                                 |
 |---------------|----------------------------------------------------------------------------------------|
-| **ID**        | TC-INT-02                                                                              |
+| **ID**        | TC-INT-04                                                                              |
 | **Stappen**   | 1. Maak schilderij aan met afbeelding via beheerpagina <br> 2. Noteer `image`-pad in response <br> 3. Open afbeeldings-URL direct in browser |
-| **Verwacht**  | Afbeelding is bereikbaar via `https://[heroku-url]/assets/img/painting-*.jpg`         |
+| **Verwacht**  | Afbeelding is bereikbaar via `https://[azure-url]/assets/img/painting-*.jpg`          |
 | **Status**    | ✅ Geslaagd                                                                            |
 
 ---
 
-### 5.3 TC-INT-03: CORS werkt correct
+### 6.5 TC-INT-05: CORS werkt correct
 
 | Attribuut     | Waarde                                                                |
 |---------------|-----------------------------------------------------------------------|
-| **ID**        | TC-INT-03                                                             |
+| **ID**        | TC-INT-05                                                             |
 | **Beschrijving** | Frontend op andere origin kan de backend aanroepen              |
 | **Verifieer** | Browser DevTools → Console — geen CORS-foutmeldingen bij API-aanroepen |
 | **Status**    | ✅ Geslaagd                                                           |
 
 ---
 
-### 5.4 TC-INT-04: Database Persistentie na Heroku Restart
+### 6.6 TC-INT-06: Database Persistentie na Azure Restart
 
 | Attribuut     | Waarde                                                                     |
 |---------------|----------------------------------------------------------------------------|
-| **ID**        | TC-INT-04                                                                  |
-| **Stappen**   | 1. Voeg schilderij toe <br> 2. Herstart Heroku dyno <br> 3. Haal schilderijen op |
-| **Verwacht**  | Toegevoegd schilderij is nog steeds aanwezig                              |
-| **Waarom**    | Verifieert dat data in PostgreSQL (persistent) staat, niet in geheugen    |
+| **ID**        | TC-INT-06                                                                  |
+| **Stappen**   | 1. Voeg schilderij toe <br> 2. Herstart Azure App Service <br> 3. Haal schilderijen op |
+| **Verwacht**  | Toegevoegd schilderij is nog steeds aanwezig (opgeslagen in Neon PostgreSQL) |
+| **Waarom**    | Verifieert dat data in Neon (persistent cloud DB) staat, niet in geheugen  |
 | **Status**    | ✅ Geslaagd                                                                |
 
 ---
 
-## 6. Edge Case Testcases
+## 7. Edge Case Testcases
 
-### 6.1 TC-EDGE-01: Schilderij aanmaken zonder ranking
+### 7.1 TC-EDGE-01: Schilderij aanmaken zonder ranking
 
 | Attribuut | Waarde                                                         |
 |-----------|----------------------------------------------------------------|
@@ -341,19 +441,19 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 6.2 TC-EDGE-02: DELETE op initieel schilderij (afbeelding behouden)
+### 7.2 TC-EDGE-02: DELETE op initieel schilderij (afbeelding behouden)
 
 | Attribuut | Waarde                                                                        |
 |-----------|-------------------------------------------------------------------------------|
 | **ID**    | TC-EDGE-02                                                                    |
-| **Stappen** | DELETE Mona Lisa (als dat al mogelijk is), dan reset dataset              |
+| **Stappen** | DELETE Mona Lisa, dan reset dataset                                       |
 | **Verwacht** | Afbeelding `The_Mona_Lisa.jpg` in `/initials/` is nog aanwezig op server |
 | **Waarom** | Initials-afbeeldingen mogen nooit worden verwijderd                         |
 | **Status** | ✅ Geslaagd (code verifieert `/initials/` pad)                              |
 
 ---
 
-### 6.3 TC-EDGE-03: Lege string als ranking
+### 7.3 TC-EDGE-03: Lege string als ranking
 
 | Attribuut | Waarde                                                          |
 |-----------|-----------------------------------------------------------------|
@@ -365,7 +465,7 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-### 6.4 TC-EDGE-04: Gelijktijdige ranking-conflicten
+### 7.4 TC-EDGE-04: Gelijktijdige ranking-conflicten
 
 | Attribuut | Waarde                                                                         |
 |-----------|--------------------------------------------------------------------------------|
@@ -377,9 +477,9 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 
 ---
 
-## 7. Geautomatiseerde Tests (toekomstig)
+## 8. Geautomatiseerde Tests (toekomstig)
 
-### 7.1 Aanbevolen Testframeworks
+### 8.1 Aanbevolen Testframeworks
 
 | Framework    | Gebruik                                          |
 |--------------|--------------------------------------------------|
@@ -388,12 +488,12 @@ curl https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings
 | **Vitest**   | Unit tests voor React-componenten               |
 | **Playwright** of **Cypress** | End-to-end browsertests         |
 
-### 7.2 Voorbeeldtest (Jest + Supertest)
+### 8.2 Voorbeeldtest (Jest + Supertest)
 
 ```javascript
 // backend/tests/paintings.test.js
 const request = require('supertest');
-const app = require('../server'); // Express app export nodig
+const app = require('../server');
 
 describe('GET /api/paintings', () => {
   it('geeft HTTP 200 terug met een array', async () => {
@@ -410,6 +510,24 @@ describe('GET /api/paintings', () => {
   });
 });
 
+describe('POST /api/auth/login', () => {
+  it('geeft HTTP 200 en token bij geldige credentials', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ username: 'admin@example.com', password: 'passwordadmin' });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user.isAdmin).toBe(true);
+  });
+
+  it('geeft HTTP 401 bij ongeldige credentials', async () => {
+    const res = await request(app)
+      .post('/api/auth/login')
+      .send({ username: 'admin@example.com', password: 'verkeerd' });
+    expect(res.statusCode).toBe(401);
+  });
+});
+
 describe('GET /api/paintings/:id', () => {
   it('geeft HTTP 400 bij ongeldig UUID', async () => {
     const res = await request(app).get('/api/paintings/niet-een-uuid');
@@ -422,29 +540,12 @@ describe('GET /api/paintings/:id', () => {
     expect(res.statusCode).toBe(404);
   });
 });
-
-describe('POST /api/paintings', () => {
-  it('maakt een nieuw schilderij aan en geeft HTTP 201', async () => {
-    const res = await request(app)
-      .post('/api/paintings')
-      .field('title', 'Test Schilderij')
-      .field('artist', 'Test Kunstenaar')
-      .field('description', 'Test beschrijving');
-    expect(res.statusCode).toBe(201);
-    expect(res.body.title).toBe('Test Schilderij');
-    expect(res.body.id).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-    );
-    // Cleanup
-    await request(app).delete(`/api/paintings/${res.body.id}`);
-  });
-});
 ```
 
-### 7.3 CI/CD Integratie Testscript (toekomstig)
+### 8.3 CI/CD Integratie Testscript (toekomstig)
 
 ```yaml
-# Toevoegen aan deploy-backend.yml
+# Toevoegen aan deploy-backend-azure.yml
 - name: Run Tests
   working-directory: backend
   run: npm test
@@ -452,14 +553,15 @@ describe('POST /api/paintings', () => {
 
 ---
 
-## 8. Testsamenvatting
+## 9. Testsamenvatting
 
 | Testcategorie      | Totaal | Geslaagd | Mislukt | Gepland |
 |--------------------|--------|----------|---------|---------|
+| Authenticatie      | 5      | 5        | 0       | 0       |
 | Backend API        | 11     | 11       | 0       | 0       |
 | Frontend UI        | 8      | 8        | 0       | 0       |
-| Integratie         | 4      | 3        | 0       | 1       |
+| Integratie (Azure) | 6      | 6        | 0       | 0       |
 | Edge Cases         | 4      | 3        | 0       | 1       |
-| **Totaal**         | **27** | **25**   | **0**   | **2**   |
+| **Totaal**         | **34** | **33**   | **0**   | **1**   |
 
-**Testdekking:** Alle kritieke CRUD-functionaliteit is handmatig getest en geslaagd. Geautomatiseerde tests zijn gepland als volgende stap.
+**Testdekking:** Alle kritieke CRUD-functionaliteit en JWT-authenticatie zijn handmatig getest op de Azure productieomgeving en geslaagd. Geautomatiseerde tests zijn gepland als volgende stap.

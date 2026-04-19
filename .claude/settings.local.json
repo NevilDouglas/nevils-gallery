@@ -5,7 +5,10 @@
       "Bash(npm install:*)",
       "Bash(npm run:*)",
       "Bash(cat \"C:\\\\Users\\\\nevil\\\\OneDrive\\\\Documenten\\\\Haagse Hogeschool\\\\Software-projects\\\\nevils-gallery\\\\frontend-react\\\\src\\\\api\"/*.js)",
-      "Bash(cat \"C:\\\\Users\\\\nevil\\\\OneDrive\\\\Documenten\\\\Haagse Hogeschool\\\\Software-projects\\\\nevils-gallery\\\\frontend-react\\\\src\\\\api\"/*.jsx)"
+      "Bash(cat \"C:\\\\Users\\\\nevil\\\\OneDrive\\\\Documenten\\\\Haagse Hogeschool\\\\Software-projects\\\\nevils-gallery\\\\frontend-react\\\\src\\\\api\"/*.jsx)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git add *)"
     ]
   }
 }

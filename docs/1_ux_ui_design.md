@@ -127,16 +127,17 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 
 **Toepassing in de applicatie:**
 
+- **JWT-authenticatie voor de beheerpagina (`LoginPage.jsx`):** De beheerpagina (`/maintenance`) is beveiligd achter een loginpagina. Bezoekers zonder geldig JWT-token worden automatisch doorgestuurd naar de loginpagina. Dit voorkomt dat onbevoegden per ongeluk (of opzettelijk) de collectie kunnen wijzigen.
 - **Bevestigingsmodal bij verwijderen (`ActionModal.jsx`):** Wanneer David op "Delete" klikt, verschijnt er een bevestigingspopup. Accidenteel verwijderen is daarmee vrijwel onmogelijk.
 - **UUID-validatie in de backend (`validateUUID` middleware):** Als een ongeldig ID wordt meegegeven in een API-aanroep, geeft de server direct HTTP 400 terug met een duidelijke foutmelding (`{ error: 'Invalid UUID format' }`). Dit voorkomt dat ongeldige data de database bereikt.
 - **HTTP 404 bij niet-gevonden schilderij:** Als een schilderij niet bestaat, geeft de API een 404-foutcode terug — nooit een lege response of crash.
-- **Reset-functie:** Als David per ongeluk meerdere schilderijen verwijdert of incorrect bewerkt, kan hij de volledige collectie herstellen via de reset-knop (POST `/api/paintings/reset`).
+- **Reset-functie (beveiligd):** Als David per ongeluk meerdere schilderijen verwijdert of incorrect bewerkt, kan hij de volledige collectie herstellen via de reset-knop (`POST /api/paintings/reset`). Dit endpoint vereist ook een JWT-token — willekeurige bezoekers kunnen de dataset niet resetten.
 - **Beschermde initiële afbeeldingen:** Afbeeldingen uit de `/initials/` map worden nooit verwijderd, zelfs als het bijbehorende schilderij wordt verwijderd. Dit voorkomt dat de originele dataset onherstelbaar beschadigd raakt.
 - **Formuliervalidatie:** Het formulier op de beheerpagina vereist verplichte velden vóór indiening, zodat incomplete data niet de backend bereikt.
 
 **Koppeling met persona's:**
-- David: de bevestigingsmodal geeft hem zekerheid bij destructieve acties.
-- Marieke en Lars: zij kunnen de applicatie niet per ongeluk "kapot" maken — ze hebben alleen leesrechten.
+- David: de bevestigingsmodal geeft hem zekerheid bij destructieve acties; de loginvereiste beschermt hem tegen onbedoeld gebruik door anderen.
+- Marieke en Lars: zij kunnen de applicatie niet per ongeluk "kapot" maken — ze hebben alleen leesrechten en geen toegang tot de beheerpagina zonder login.
 
 ---
 
@@ -169,7 +170,7 @@ Dit document beschrijft hoe de frontend van Nevil's Gallery is ontworpen met aan
 | Effective       | Homepagina toont top-8 direct; CRUD volledig via beheerpagina       | Marieke, David  |
 | Efficient       | Sortering, filtering, paginering; automatisch ranking-schuiven      | David, Marieke  |
 | Engaging        | Kaartlayout, beschrijvingsteksten, live klok, consistente stijl     | Lars, Marieke   |
-| Error Tolerant  | Bevestigingsmodal, UUID-validatie, reset-knop, beschermde initials  | David           |
+| Error Tolerant  | JWT-login vereist voor beheer, bevestigingsmodal, UUID-validatie, reset-knop | David           |
 | Easy to Learn   | Vertrouwde navbar, beschrijvende knoppen, consistente layout        | Lars, Marieke   |
 
 De 5 E's vormen samen een solide basis voor een gebruikersvriendelijke, toegankelijke en foutbestendige galerij-applicatie die tegemoet komt aan de behoeften van kunstliefhebbers, beheerders en casual bezoekers.

@@ -9,7 +9,8 @@
 Dit document bevat het ontwerp van de backend van Nevil's Gallery, inclusief het ERD-diagram en een volledige CRUD API-documentatie. De API is gebouwd met Express.js en gedocumenteerd via OpenAPI 3.0 (Swagger).
 
 De interactieve Swagger-documentatie is live beschikbaar op:  
-**`https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api-docs`**
+- **Azure (primair):** `https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net/api-docs`
+- **Heroku (alternatief):** `https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api-docs`
 
 ---
 
@@ -32,54 +33,47 @@ De interactieve Swagger-documentatie is live beschikbaar op:
 │  │ artist           │ VARCHAR(255)  │ NULLABLE          │  │
 │  │ ranking          │ VARCHAR(255)  │ NULLABLE          │  │
 │  │ description      │ TEXT          │ NULLABLE          │  │
+│  │ alt              │ VARCHAR(255)  │ NULLABLE          │  │
 │  └──────────────────┴───────────────┴───────────────────┘  │
 │                                                            │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │                      users                          │  │
+│  ├──────────────────┬───────────────┬───────────────────┤  │
+│  │ id               │ UUID          │ PRIMARY KEY       │  │
+│  │ fname            │ VARCHAR(50)   │ NULLABLE          │  │
+│  │ lname            │ VARCHAR(50)   │ NULLABLE          │  │
+│  │ cname            │ VARCHAR(50)   │ NULLABLE          │  │
+│  │ admin            │ VARCHAR(50)   │ NULLABLE          │  │
+│  │ username         │ VARCHAR(100)  │ NOT NULL          │  │
+│  │ password         │ VARCHAR(255)  │ NOT NULL (bcrypt) │  │
+│  └──────────────────┴───────────────┴───────────────────┘  │
 └────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 Mermaid ERD (uitgebreid ontwerp)
+### 2.2 Mermaid ERD
 
 ```mermaid
 erDiagram
     PAINTINGS {
-        uuid    id          PK  "Primaire sleutel, UUID v4 (crypto.randomUUID)"
-        varchar image           "Relatief serverpad: /assets/img/... of /assets/img/initials/..."
+        uuid    id          PK  "Primaire sleutel, UUID v4"
+        varchar image           "Relatief serverpad"
         varchar title           "Titel van het schilderij"
         varchar artist          "Naam van de kunstenaar"
-        varchar ranking         "Rangschikking als string, numeriek vergeleken"
-        text    description     "Uitgebreide kunsthistorische beschrijving"
-    }
-```
-
-### 2.3 Toekomstig uitgebreid datamodel (bij authenticatie)
-
-```mermaid
-erDiagram
-    PAINTINGS {
-        uuid    id          PK
-        varchar image
-        varchar title
-        varchar artist
-        varchar ranking
-        text    description
-        uuid    created_by  FK
-        datetime created_at
-        datetime updated_at
+        varchar ranking         "Rangschikking als string"
+        text    description     "Uitgebreide beschrijving"
+        varchar alt             "Alt-tekst (toegankelijkheid)"
     }
 
     USERS {
-        uuid    id          PK
-        varchar username
-        varchar password_hash
-        varchar email
-        boolean is_admin
-        datetime created_at
+        uuid    id          PK  "Primaire sleutel, UUID v4"
+        varchar fname           "Voornaam"
+        varchar lname           "Achternaam"
+        varchar cname           "Bedrijfsnaam"
+        varchar admin           "'true' of 'false'"
+        varchar username        "E-mailadres (login)"
+        varchar password        "Bcrypt-hash"
     }
-
-    PAINTINGS }o--|| USERS : "toegevoegd door"
 ```
-
-> **Toelichting:** De `USERS`-tabel bestaat al in de database-dump (`dump.sql`), maar is nog niet gekoppeld aan de actieve API. De foreign key `created_by` is een toekomstige uitbreiding.
 
 ---
 
@@ -88,23 +82,25 @@ erDiagram
 ```
 ┌─────────────────────┐    HTTPS     ┌──────────────────────────────┐
 │   React Frontend    │◄────────────►│   Express.js Backend         │
-│   (Netlify)         │              │   (Heroku)                   │
+│   (Azure SWA)       │              │   (Azure App Service)        │
 │                     │              │                              │
 │  - HomePage         │   REST API   │  /api/paintings  ──► routes  │
-│  - MainTablePage    │   JSON       │  /api-docs       ──► swagger │
+│  - MainTablePage    │   JSON       │  /api/auth       ──► routes  │
+│  - LoginPage        │              │  /api-docs       ──► swagger │
 │  - MaintenancePage  │              │  /assets/img     ──► static  │
 │  - AboutPage        │              │                              │
 └─────────────────────┘              │  ┌──────────────────────┐    │
                                      │  │   Sequelize ORM      │    │
                                      │  │   painting.model.js  │    │
+                                     │  │   user.model.js      │    │
                                      │  └──────────┬───────────┘    │
-                                     │             │                │
                                      └─────────────┼────────────────┘
-                                                   │ PostgreSQL
+                                                   │ PostgreSQL (SSL)
                                      ┌─────────────▼────────────────┐
-                                     │   Heroku PostgreSQL          │
+                                     │   Neon PostgreSQL (cloud)    │
                                      │   schema_nevils_gallery      │
-                                     │   └── paintings (tabel)      │
+                                     │   ├── paintings (tabel)      │
+                                     │   └── users (tabel)          │
                                      └──────────────────────────────┘
 ```
 
@@ -114,10 +110,11 @@ erDiagram
 
 ### 4.1 Basis URL
 
-| Omgeving   | URL                                                        |
-|------------|------------------------------------------------------------|
-| Productie  | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com`    |
-| Lokaal     | `http://localhost:4000`                                    |
+| Omgeving   | URL                                                                                        |
+|------------|--------------------------------------------------------------------------------------------|
+| Productie (Azure)  | `https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net`   |
+| Productie (Heroku) | `https://nevils-gallery-api-456cfdb93e97.herokuapp.com`                            |
+| Lokaal             | `http://localhost:4000`                                                             |
 
 ### 4.2 Painting Object Schema
 
@@ -128,16 +125,54 @@ erDiagram
   "title":       "string | null",
   "artist":      "string | null",
   "ranking":     "string (numeriek) | null",
-  "description": "string | null"
+  "description": "string | null",
+  "alt":         "string | null"
 }
 ```
 
-### 4.3 Error Object Schema
+### 4.3 Authenticatie
 
+Beveiligde endpoints vereisen een geldig JWT-token in de `Authorization` header:
+
+```http
+Authorization: Bearer <token>
+```
+
+Het token wordt verkregen via `POST /api/auth/login`.
+
+---
+
+### Auth Endpoint: Inloggen
+
+```
+POST /api/auth/login
+Content-Type: application/json
+```
+
+**Request Body:**
 ```json
 {
-  "error": "string (beschrijving van de fout)"
+  "username": "admin@example.com",
+  "password": "passwordadmin"
 }
+```
+
+**Response 200 OK:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "5f74c3f0-d550-439d-8d67-4aaa1ee92c2a",
+    "username": "admin@example.com",
+    "name": "Administrator",
+    "isAdmin": true
+  }
+}
+```
+
+**Response 401:**
+```json
+{ "error": "Ongeldige inloggegevens." }
 ```
 
 ---
@@ -148,47 +183,14 @@ erDiagram
 GET /api/paintings
 ```
 
-**Beschrijving:** Haalt de volledige collectie op, gesorteerd op ranking (oplopend).
-
-**Parameters:** Geen
-
-**Headers:** Geen vereist
-
 **Voorbeeld Request:**
 ```http
 GET /api/paintings HTTP/1.1
-Host: nevils-gallery-api-456cfdb93e97.herokuapp.com
+Host: nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net
 Accept: application/json
 ```
 
-**Voorbeeld Response (200 OK):**
-```json
-[
-  {
-    "id": "671fa6fd-da4a-4d28-b4f4-065e7500ece7",
-    "image": "/assets/img/initials/The_Mona_Lisa.jpg",
-    "title": "The Mona Lisa",
-    "artist": "Leonardo da Vinci",
-    "ranking": "1",
-    "description": "Any list of Most Famous paintings would be incomplete without..."
-  },
-  {
-    "id": "d8694e59-309f-4d56-a0d6-da82d921b0eb",
-    "image": "/assets/img/initials/Starry_Night.jpg",
-    "title": "Starry Night",
-    "artist": "Vincent van Gogh",
-    "ranking": "2",
-    "description": "Vincent van Gogh has painted countless well-known pieces..."
-  }
-]
-```
-
-**Foutrespons (500):**
-```json
-{ "error": "Interne serverfout" }
-```
-
-**Implementatie:** `painting.controller.js:16` — `getAllPaintings()`
+**Response 200 OK:** Array van schilderijen, gesorteerd op ranking ASC.
 
 ---
 
@@ -198,45 +200,9 @@ Accept: application/json
 GET /api/paintings/:id
 ```
 
-**Beschrijving:** Haalt één schilderij op via zijn UUID.
-
-**URL Parameter:**
-
-| Parameter | Type   | Verplicht | Beschrijving             |
-|-----------|--------|-----------|--------------------------|
-| `id`      | UUID   | Ja        | UUID van het schilderij  |
-
-**Validatie:** UUID wordt gevalideerd door de `validateUUID` middleware (`painting.routes.js:22`) vóór de controller wordt aangeroepen.
-
-**Voorbeeld Request:**
-```http
-GET /api/paintings/671fa6fd-da4a-4d28-b4f4-065e7500ece7 HTTP/1.1
-Host: nevils-gallery-api-456cfdb93e97.herokuapp.com
-```
-
-**Voorbeeld Response (200 OK):**
-```json
-{
-  "id": "671fa6fd-da4a-4d28-b4f4-065e7500ece7",
-  "image": "/assets/img/initials/The_Mona_Lisa.jpg",
-  "title": "The Mona Lisa",
-  "artist": "Leonardo da Vinci",
-  "ranking": "1",
-  "description": "Any list of Most Famous paintings..."
-}
-```
-
-**Foutrespons (400 — ongeldig UUID):**
-```json
-{ "error": "Invalid UUID format" }
-```
-
-**Foutrespons (404 — niet gevonden):**
-```json
-{ "error": "Painting not found" }
-```
-
-**Implementatie:** `painting.controller.js:31` — `getPaintingById()`
+**Response 200:** Schilderij-object  
+**Response 400:** `{ "error": "Invalid UUID format" }`  
+**Response 404:** `{ "error": "Painting not found" }`
 
 ---
 
@@ -245,46 +211,22 @@ Host: nevils-gallery-api-456cfdb93e97.herokuapp.com
 ```
 POST /api/paintings
 Content-Type: multipart/form-data
+Authorization: Bearer <token>
 ```
-
-**Beschrijving:** Voegt een nieuw schilderij toe aan de collectie. Als een ranking wordt opgegeven, worden alle bestaande schilderijen met een gelijke of hogere ranking automatisch één positie opgeschoven (ranking-shift).
-
-**Request Body (multipart/form-data):**
-
-| Veld          | Type     | Verplicht | Beschrijving                              |
-|---------------|----------|-----------|-------------------------------------------|
-| `title`       | string   | Aanbevolen | Titel van het schilderij                 |
-| `artist`      | string   | Aanbevolen | Naam van de kunstenaar                   |
-| `ranking`     | integer  | Nee       | Gewenste ranking (geheel getal)           |
-| `description` | string   | Aanbevolen | Beschrijving van het schilderij          |
-| `imageFile`   | bestand  | Nee       | Afbeelding (JPEG/PNG)                    |
 
 **Voorbeeld Request (curl):**
 ```bash
-curl -X POST https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings \
+curl -X POST https://nevils-gallery-api-2-f4haftfbf2gheggu.westeurope-01.azurewebsites.net/api/paintings \
+  -H "Authorization: Bearer <token>" \
   -F "title=The Birth of Venus" \
   -F "artist=Sandro Botticelli" \
   -F "ranking=5" \
-  -F "description=Painted circa 1484-1486 by Sandro Botticelli..." \
+  -F "description=Painted circa 1484-1486..." \
   -F "imageFile=@/path/to/botticelli.jpg"
 ```
 
-**Voorbeeld Response (201 Created):**
-```json
-{
-  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "image": "/assets/img/painting-1712345678901.jpg",
-  "title": "The Birth of Venus",
-  "artist": "Sandro Botticelli",
-  "ranking": "5",
-  "description": "Painted circa 1484-1486..."
-}
-```
-
-**Bijzonderheid — Ranking-shift:**
-Als `ranking=5` wordt opgegeven en er zijn al schilderijen op ranking 5, 6, 7, ..., dan worden die automatisch verschoven naar 6, 7, 8, ... zodat het nieuwe schilderij op positie 5 terecht komt.
-
-**Implementatie:** `painting.controller.js:50` — `createPainting()`
+**Response 201 Created:** Nieuw schilderij-object  
+**Response 401:** Niet ingelogd
 
 ---
 
@@ -293,42 +235,11 @@ Als `ranking=5` wordt opgegeven en er zijn al schilderijen op ranking 5, 6, 7, .
 ```
 PUT /api/paintings/:id
 Content-Type: multipart/form-data
+Authorization: Bearer <token>
 ```
 
-**Beschrijving:** Werkt de velden van een bestaand schilderij bij. Bij een rankingwijziging worden andere schilderijen automatisch verschoven (bidirectioneel):
-- **Omhoog** (lagere ranking): schilderijen in het bereik gaan één plek omlaag.
-- **Omlaag** (hogere ranking): schilderijen in het bereik gaan één plek omhoog.
-
-Als een nieuwe afbeelding wordt geüpload, wordt de oude automatisch verwijderd van de server (tenzij het een initieel schilderij betreft).
-
-**URL Parameter:**
-
-| Parameter | Type   | Verplicht | Beschrijving             |
-|-----------|--------|-----------|--------------------------|
-| `id`      | UUID   | Ja        | UUID van het schilderij  |
-
-**Request Body:** Dezelfde velden als POST, allemaal optioneel.
-
-**Voorbeeld Request (curl):**
-```bash
-curl -X PUT https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings/671fa6fd-da4a-4d28-b4f4-065e7500ece7 \
-  -F "ranking=2" \
-  -F "description=Updated description..."
-```
-
-**Voorbeeld Response (200 OK):**
-```json
-{
-  "id": "671fa6fd-da4a-4d28-b4f4-065e7500ece7",
-  "image": "/assets/img/initials/The_Mona_Lisa.jpg",
-  "title": "The Mona Lisa",
-  "artist": "Leonardo da Vinci",
-  "ranking": "2",
-  "description": "Updated description..."
-}
-```
-
-**Implementatie:** `painting.controller.js:94` — `updatePainting()`
+**Response 200:** Bijgewerkt schilderij  
+**Response 400/401/404:** Fout
 
 ---
 
@@ -336,24 +247,11 @@ curl -X PUT https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings/
 
 ```
 DELETE /api/paintings/:id
+Authorization: Bearer <token>
 ```
 
-**Beschrijving:** Verwijdert een schilderij uit de database. Als het schilderij een door de gebruiker geüploade afbeelding heeft (niet uit de `/initials/` map), wordt de afbeelding ook van de server verwijderd.
-
-**URL Parameter:**
-
-| Parameter | Type   | Verplicht | Beschrijving             |
-|-----------|--------|-----------|--------------------------|
-| `id`      | UUID   | Ja        | UUID van het schilderij  |
-
-**Voorbeeld Request (curl):**
-```bash
-curl -X DELETE https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintings/671fa6fd-da4a-4d28-b4f4-065e7500ece7
-```
-
-**Response (204 No Content):** Geen body — schilderij succesvol verwijderd.
-
-**Implementatie:** `painting.controller.js:169` — `deletePainting()`
+**Response 204:** Succesvol verwijderd  
+**Response 400/401/404:** Fout
 
 ---
 
@@ -361,71 +259,49 @@ curl -X DELETE https://nevils-gallery-api-456cfdb93e97.herokuapp.com/api/paintin
 
 ```
 POST /api/paintings/reset
+Authorization: Bearer <token>
 ```
 
-**Beschrijving:** Reset de volledige collectie naar de originele 20 beroemde meesterwerken. Alle door gebruikers toegevoegde schilderijen (inclusief hun afbeeldingen) worden verwijderd.
-
-**Stappen die worden uitgevoerd:**
-1. Alle schilderijen zonder `/initials/` pad worden gevonden.
-2. Hun afbeeldingsbestanden worden van de server verwijderd.
-3. De tabel wordt geleegd (`TRUNCATE`).
-4. De 20 originele schilderijen worden opnieuw ingevoerd (`bulkCreate`).
-
-**Voorbeeld Response (200 OK):**
+**Response 200 OK:**
 ```json
 { "message": "Database is succesvol gereset naar de originele 20 schilderijen." }
 ```
-
-**Implementatie:** `painting.controller.js:222` — `resetPaintings()`
 
 ---
 
 ## 5. Middleware Documentatie
 
-### 5.1 validateUUID (painting.routes.js:22)
+### 5.1 validateUUID
 
 ```javascript
-const validateUUID = (req, res, next) => {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  if (!uuidRegex.test(req.params.id)) {
-    return res.status(400).json({ error: 'Invalid UUID format' });
-  }
-  next();
-};
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 ```
 
-**Doel:** Valideert of het `:id` URL-parameter een geldig UUID v1-v5 is.  
-**Toegepast op:** GET `/:id`, PUT `/:id`, DELETE `/:id`  
-**Foutrespons:** HTTP 400 met `{ "error": "Invalid UUID format" }`
+Toegepast op: GET `/:id`, PUT `/:id`, DELETE `/:id`
 
-### 5.2 upload (middleware/upload.js)
+### 5.2 authenticateToken (auth.middleware.js)
 
-**Doel:** Verwerkt `multipart/form-data` bestandsuploads via Multer.  
-**Veldnaam:** `imageFile`  
-**Bestemming:** `backend/public/assets/img/`  
-**Bestandsnaam:** `painting-{timestamp}{extensie}` (bijv. `painting-1712345678901.jpg`)  
-**Toegepast op:** POST `/`, PUT `/:id`
+```javascript
+const token = req.headers['authorization']?.split(' ')[1];
+req.user = jwt.verify(token, process.env.JWT_SECRET);
+```
+
+Toegepast op: POST `/`, PUT `/:id`, DELETE `/:id`, POST `/reset`
+
+### 5.3 upload (middleware/upload.js)
+
+Verwerkt `multipart/form-data` via Multer. Bestandsnaam: `painting-{timestamp}{extensie}`.
 
 ---
 
-## 6. Routevolgorde (belangrijk)
+## 6. Statuscodematrix
 
-De route `/reset` is bewust **vóór** `/:id` geregistreerd om te voorkomen dat "reset" als UUID wordt geïnterpreteerd:
-
-```javascript
-router.post('/reset', resetPaintings);    // Lijn 82 — vóór /:id
-router.get('/:id', validateUUID, ...);   // Lijn 112 — na /reset
-```
-
----
-
-## 7. Statuscodematrix
-
-| Endpoint                    | 200 | 201 | 204 | 400 | 404 | 500 |
-|-----------------------------|-----|-----|-----|-----|-----|-----|
-| GET /api/paintings          | ✓   |     |     |     |     | ✓   |
-| GET /api/paintings/:id      | ✓   |     |     | ✓   | ✓   | ✓   |
-| POST /api/paintings         |     | ✓   |     |     |     | ✓   |
-| PUT /api/paintings/:id      | ✓   |     |     | ✓   | ✓   | ✓   |
-| DELETE /api/paintings/:id   |     |     | ✓   | ✓   | ✓   | ✓   |
-| POST /api/paintings/reset   | ✓   |     |     |     |     | ✓   |
+| Endpoint                    | 200 | 201 | 204 | 400 | 401 | 404 | 500 |
+|-----------------------------|-----|-----|-----|-----|-----|-----|-----|
+| POST /api/auth/login        | ✓   |     |     | ✓   | ✓   |     | ✓   |
+| GET /api/paintings          | ✓   |     |     |     |     |     | ✓   |
+| GET /api/paintings/:id      | ✓   |     |     | ✓   |     | ✓   | ✓   |
+| POST /api/paintings         |     | ✓   |     |     | ✓   |     | ✓   |
+| PUT /api/paintings/:id      | ✓   |     |     | ✓   | ✓   | ✓   | ✓   |
+| DELETE /api/paintings/:id   |     |     | ✓   | ✓   | ✓   | ✓   | ✓   |
+| POST /api/paintings/reset   | ✓   |     |     |     | ✓   |     | ✓   |
