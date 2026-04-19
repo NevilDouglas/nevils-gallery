@@ -11,3 +11,4 @@
 
 - **Handleidingen**
   - [Azure Setup](azure-setup.md)
+  - [Heroku & Netlify Setup](heroku-netlify-setup.md)

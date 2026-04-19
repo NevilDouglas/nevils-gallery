@@ -18,6 +18,7 @@
 | 6  | [Deployment & Security Implementatie](6_deployment_security.md) | `6_deployment_security.md` | Azure App Service, Azure Static Web Apps, Heroku, Netlify, JWT-authenticatie |
 | 7  | [Testplan & Testcases](7_testplan.md)                | `7_testplan.md`                | Handmatige tests, frontend + backend + Azure productie     |
 | —  | [Azure Setup Handleiding](azure-setup.md)            | `azure-setup.md`               | Stap-voor-stap handleiding Azure deployment                |
+| —  | [Heroku & Netlify Setup Handleiding](heroku-netlify-setup.md) | `heroku-netlify-setup.md` | Stap-voor-stap handleiding Heroku/Netlify deployment  |
 
 ---
 
