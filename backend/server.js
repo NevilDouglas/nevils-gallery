@@ -22,7 +22,9 @@ app.set('trust proxy', 1);
 
 // --- Middleware ---
 // Helmet met aangepaste CSP zodat Swagger UI blijft werken
+// crossOriginResourcePolicy: cross-origin zodat de frontend afbeeldingen kan laden van dit domein
 app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
