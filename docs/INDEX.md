@@ -63,6 +63,6 @@ Frontend:   React 18 + React Router 6 + Vite 5
 Database:   Neon PostgreSQL (cloud), schema: schema_nevils_gallery
 Auth:       JWT (jsonwebtoken + bcryptjs)
 Docs:       OpenAPI 3.0 / Swagger UI
-Deployment: Azure App Service (backend) + Azure Static Web Apps (frontend)
+Deployment: Azure App Service (backend), Heroku (backend) + Azure Static Web Apps (frontend), Netlify (frontend)
 CI/CD:      GitHub Actions
 ```
