@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(git clone *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(pip install *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
